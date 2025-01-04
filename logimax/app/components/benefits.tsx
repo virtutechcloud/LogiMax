@@ -1,13 +1,18 @@
 "use client";
 
-import React, { JSX } from "react";
+import React, { useState, useEffect, ReactElement } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+// @ts-ignore
+import {
+  UndrawDeliveryTruck,
+  UndrawAnalytics,
+} from "react-undraw-illustrations";
 
 interface Benefit {
   title: string;
   description: string;
-  icon: JSX.Element;
+  icon: ReactElement;
   stats?: { value: string; label: string }[];
 }
 
@@ -138,12 +143,31 @@ const BenefitCard: React.FC<{ benefit: Benefit; index: number }> = ({
   benefit,
   index,
 }) => {
+  const [mounted, setMounted] = useState(false);
   const [ref, inView] = useInView({
     threshold: 0.2,
     triggerOnce: true,
   });
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const isEven = index % 2 === 0;
+
+  // Only render illustrations after client-side mount
+  const getIllustration = (title: string) => {
+    if (!mounted) return null;
+
+    switch (title) {
+      case "Real-Time Tracking":
+        return <UndrawDeliveryTruck height={250} />;
+      case "Smart Analytics":
+        return <UndrawAnalytics height={250} />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <motion.div
@@ -189,17 +213,14 @@ const BenefitCard: React.FC<{ benefit: Benefit; index: number }> = ({
         )}
       </div>
 
-      {/* Illustration/Graph */}
+      {/* Illustration */}
       <motion.div
-        className="flex-1 h-64 bg-navy-dark/50 rounded-lg overflow-hidden"
+        className="flex-1 h-64 bg-navy-dark/50 rounded-lg overflow-hidden p-4"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={inView ? { opacity: 1, scale: 1 } : {}}
         transition={{ delay: 0.3, duration: 0.6 }}
       >
-        {/* Add your illustrations or graphs here */}
-        <div className="w-full h-full flex items-center justify-center text-slate-500">
-          [Illustration]
-        </div>
+        {getIllustration(benefit.title)}
       </motion.div>
     </motion.div>
   );
