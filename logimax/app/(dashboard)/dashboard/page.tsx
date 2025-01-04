@@ -186,108 +186,131 @@ const ChartSection: React.FC = () => (
   </div>
 );
 
-const ActivitySection: React.FC = () => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.6 }}
-    className="space-y-4"
-  >
-    <Paper className="p-8 bg-[#0a192f] border border-cyan-400/20 hover:border-cyan-400/40 transition-all backdrop-blur-sm relative overflow-hidden">
-      {/* Decorative gradients */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-400/5 rounded-full blur-3xl transform translate-x-16 -translate-y-16" />
-      <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-400/5 rounded-full blur-2xl transform -translate-x-12 translate-y-12" />
+const ActivitySection: React.FC = () => {
+  // Use state to handle client-side rendering
+  const [isClient, setIsClient] = React.useState(false);
 
-      <div className="relative z-10">
-        <div className="mb-8">
-          <Typography variant="h5" className="text-white font-medium mb-2">
-            Activity Feed
-          </Typography>
-          <Typography variant="subtitle1" className="text-slate-300">
-            Live shipment updates and system notifications
-          </Typography>
-        </div>
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
 
-        <div className="space-y-4 overflow-y-auto max-h-[340px] pr-2">
-          {[
-            {
-              title: "Shipment Created",
-              time: "2 minutes ago",
-              status: "success",
-              icon: <Package weight="duotone" className="w-5 h-5" />,
-              description: "Order #12345 - Express Delivery to New York",
-            },
-            {
-              title: "Successful Delivery",
-              time: "15 minutes ago",
-              status: "success",
-              icon: <CheckCircle weight="duotone" className="w-5 h-5" />,
-              description:
-                "Order #11890 delivered to John Smith in Los Angeles",
-            },
-            {
-              title: "Low Stock Warning",
-              time: "1 hour ago",
-              status: "warning",
-              icon: <Warning weight="duotone" className="w-5 h-5" />,
-              description:
-                "Product SKU-789 (Premium Packaging) below minimum threshold",
-            },
-            {
-              title: "Delivery Delay Alert",
-              time: "2 hours ago",
-              status: "warning",
-              icon: <Clock weight="duotone" className="w-5 h-5" />,
-              description:
-                "Order #34567 delayed due to weather conditions in Chicago",
-            },
-          ].map((activity, index) => (
-            <motion.div
-              key={activity.title}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.7 + index * 0.1 }}
-              className="group p-4 bg-navy-darker rounded-xl border border-cyan-400/10 hover:border-cyan-400/20 transition-all duration-300"
-            >
-              <div className="flex gap-4">
-                <div
-                  className={`shrink-0 p-2.5 rounded-lg transition-colors duration-300 ${
-                    activity.status === "success"
-                      ? "bg-emerald-400/10 text-emerald-400 group-hover:bg-emerald-400/20"
-                      : "bg-amber-400/10 text-amber-400 group-hover:bg-amber-400/20"
-                  }`}
-                >
-                  {activity.icon}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <Typography className="text-white font-semibold truncate">
-                      {activity.title}
-                    </Typography>
+  if (!isClient) {
+    return null; // or a loading state
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.6 }}
+      className="space-y-4"
+    >
+      <Paper className="p-8 bg-[#0f1729] border border-cyan-400/20 hover:border-cyan-400/40 transition-all backdrop-blur-sm relative overflow-hidden">
+        {/* Decorative gradients */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-400/5 rounded-full blur-3xl transform translate-x-16 -translate-y-16" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-400/5 rounded-full blur-2xl transform -translate-x-12 translate-y-12" />
+
+        <div className="relative z-10">
+          <div className="mb-8">
+            <Typography variant="h5" className="text-white font-medium mb-2">
+              Activity Feed
+            </Typography>
+            <Typography variant="subtitle1" className="text-slate-300">
+              Live shipment updates and system notifications
+            </Typography>
+          </div>
+
+          <div className="space-y-4 overflow-y-auto max-h-[340px] pr-2">
+            {[
+              {
+                title: "Shipment Created",
+                time: "2 minutes ago",
+                status: "success",
+                icon: <Package weight="duotone" className="w-5 h-5" />,
+                description: "Order #12345 - Express Delivery to New York",
+              },
+              {
+                title: "Successful Delivery",
+                time: "15 minutes ago",
+                status: "success",
+                icon: <CheckCircle weight="duotone" className="w-5 h-5" />,
+                description:
+                  "Order #11890 delivered to John Smith in Los Angeles",
+              },
+              {
+                title: "Low Stock Warning",
+                time: "1 hour ago",
+                status: "warning",
+                icon: <Warning weight="duotone" className="w-5 h-5" />,
+                description:
+                  "Product SKU-789 (Premium Packaging) below minimum threshold",
+              },
+              {
+                title: "Delivery Delay Alert",
+                time: "2 hours ago",
+                status: "warning",
+                icon: <Clock weight="duotone" className="w-5 h-5" />,
+                description:
+                  "Order #34567 delayed due to weather conditions in Chicago",
+              },
+            ].map((activity, index) => (
+              <motion.div
+                key={activity.title}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.7 + index * 0.1 }}
+                className="group p-4 bg-navy-darker rounded-xl border border-cyan-400/10 hover:border-cyan-400/20 transition-all duration-300"
+              >
+                <div className="flex gap-4">
+                  <div
+                    className={`shrink-0 p-2.5 rounded-lg transition-colors duration-300 ${
+                      activity.status === "success"
+                        ? "bg-emerald-400/10 text-emerald-400 group-hover:bg-emerald-400/20"
+                        : "bg-amber-400/10 text-amber-400 group-hover:bg-amber-400/20"
+                    }`}
+                  >
+                    {activity.icon}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <Typography className="text-white font-semibold truncate">
+                        {activity.title}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        className="text-slate-200 shrink-0 ml-2 font-semibold"
+                      >
+                        {activity.time}
+                      </Typography>
+                    </div>
                     <Typography
-                      variant="caption"
-                      className="text-slate-200 shrink-0 ml-2 font-semibold"
+                      variant="body2"
+                      className="text-slate-200 truncate font-medium"
                     >
-                      {activity.time}
+                      {activity.description}
                     </Typography>
                   </div>
-                  <Typography
-                    variant="body2"
-                    className="text-slate-200 truncate font-medium"
-                  >
-                    {activity.description}
-                  </Typography>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </div>
-    </Paper>
-  </motion.div>
-);
+      </Paper>
+    </motion.div>
+  );
+};
 
 const Dashboard: React.FC = () => {
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null; // or a loading state
+  }
+
   return (
     <div className="min-h-screen bg-[#0a192f]">
       {/* Enhanced background with better contrast */}
