@@ -6,6 +6,7 @@ import HeroSection from "../components/hero";
 import Benefits from "../components/benefits";
 import TestimonialsCarousel from "../components/TestimonialsCarousel";
 import PricingPlans from "../components/PricingPlans";
+import Footer from "../components/footer";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [mounted, setMounted] = useState(false);
@@ -29,6 +30,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <HeroSection />
       <Benefits />
       <PricingPlans />
+      <Footer />
       {children}
     </div>
   );
