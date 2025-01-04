@@ -70,3 +70,39 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+nav a:hover {
+  color: #64ffda; /* Cyan accent color on hover */
+}
+
+@media (max-width: 768px) {
+  nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background-color: #0a192f;
+    padding: 1rem;
+  }
+
+  nav.open {
+    display: flex;
+  }
+
+  nav a,
+  nav button {
+    margin: 0.5rem 0;
+  }
+}
+
+/* Hover effects */
+nav a:hover {
+  color: #64ffda !important;
+}
+
+button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}

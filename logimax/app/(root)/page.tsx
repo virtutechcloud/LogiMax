@@ -1,15 +1,11 @@
-import Hello from "../components/hello";
+import React from "react";
 
-console.log("What am I doing here? -- SERVER?");
 export default function Home() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <div>
-      <h1>Welcome to LogiMax</h1>
-      <p>
-        LogiMax is a platform for managing logistics and supply chain
-        operations.
-      </p>
-      <Hello />
+      <div>© {currentYear} Virtutech Cloud Innovations</div>
     </div>
   );
 }
