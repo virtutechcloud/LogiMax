@@ -264,7 +264,7 @@ const ActivitySection: React.FC = () => {
               >
                 <div className="flex gap-4">
                   <div
-                    className={`shrink-0 p-2.5 rounded-lg transition-colors duration-300 ${
+                    className={`shrink-0 p-2.5 rounded-lg transition-colors duration-300 ${ 
                       activity.status === "success"
                         ? "bg-emerald-400/10 text-emerald-400 group-hover:bg-emerald-400/20"
                         : "bg-amber-400/10 text-amber-400 group-hover:bg-amber-400/20"
