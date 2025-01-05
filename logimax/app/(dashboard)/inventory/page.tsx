@@ -37,6 +37,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import Sidebar from "../../components/sidebar";
 
 // Mock data - replace with actual data fetching
 const inventoryStats = {
@@ -151,234 +152,240 @@ export default function Inventory() {
   const [showFilters, setShowFilters] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#0a192f]">
-      <motion.div
-        className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-400/5 to-transparent pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-      />
+    <div className="min-h-screen bg-[#0a192f] flex">
+      <Sidebar className="w-64" />
+      <div className="flex-1 ml-64 relative">
+        <motion.div
+          className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-400/5 to-transparent pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+        />
+        <Container maxWidth="xl" className="relative py-8 space-y-10">
+          {/* Header Section */}
+          <div className="flex justify-between items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Typography variant="h4" className="text-white mb-2 font-light">
+                Inventory Management
+              </Typography>
+              <Typography variant="body1" className="text-slate-400">
+                Monitor and manage your stock levels
+              </Typography>
+            </motion.div>
 
-      <Container maxWidth="xl" className="relative py-8 space-y-10">
-        {/* Enhanced Header Section */}
-        <div className="flex justify-between items-center">
+            <div className="flex gap-3">
+              <Button
+                variant="outlined"
+                startIcon={<Barcode weight="duotone" />}
+                className="border-cyan-400/40 text-cyan-400 hover:border-cyan-400"
+              >
+                Scan Item
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={<Package weight="duotone" />}
+                className="bg-cyan-400 hover:bg-cyan-500"
+              >
+                Add New Item
+              </Button>
+            </div>
+          </div>
+
+          {/* Metrics Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <MetricCard
+              title="Total SKUs"
+              value={inventoryStats.totalSKUs}
+              icon={<Tag weight="duotone" className="text-cyan-400 w-7 h-7" />}
+              delay={0.1}
+            />
+            <MetricCard
+              title="Total Value"
+              value={inventoryStats.totalValue}
+              icon={<Cube weight="duotone" className="text-cyan-400 w-7 h-7" />}
+              delay={0.2}
+            />
+            <MetricCard
+              title="Turnover Rate"
+              value={inventoryStats.turnoverRate}
+              icon={
+                <ArrowsClockwise
+                  weight="duotone"
+                  className="text-cyan-400 w-7 h-7"
+                />
+              }
+              delay={0.3}
+            />
+            <MetricCard
+              title="Low Stock Items"
+              value={inventoryStats.lowStockCount}
+              icon={
+                <Warning weight="duotone" className="text-cyan-400 w-7 h-7" />
+              }
+              delay={0.4}
+              additionalInfo="Items below reorder point"
+            />
+          </div>
+
+          {/* Main Content */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ delay: 0.5 }}
           >
-            <Typography variant="h4" className="text-white mb-2 font-light">
-              Inventory Management
-            </Typography>
-            <Typography variant="body1" className="text-slate-400">
-              Monitor and manage your stock levels
-            </Typography>
-          </motion.div>
-
-          <div className="flex gap-3">
-            <Button
-              variant="outlined"
-              startIcon={<Barcode weight="duotone" />}
-              className="border-cyan-400/40 text-cyan-400 hover:border-cyan-400"
-            >
-              Scan Item
-            </Button>
-            <Button
-              variant="contained"
-              startIcon={<Package weight="duotone" />}
-              className="bg-cyan-400 hover:bg-cyan-500"
-            >
-              Add New Item
-            </Button>
-          </div>
-        </div>
-
-        {/* Metrics Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <MetricCard
-            title="Total SKUs"
-            value={inventoryStats.totalSKUs}
-            icon={<Tag weight="duotone" className="text-cyan-400 w-7 h-7" />}
-            delay={0.1}
-          />
-          <MetricCard
-            title="Total Value"
-            value={inventoryStats.totalValue}
-            icon={<Cube weight="duotone" className="text-cyan-400 w-7 h-7" />}
-            delay={0.2}
-          />
-          <MetricCard
-            title="Turnover Rate"
-            value={inventoryStats.turnoverRate}
-            icon={
-              <ArrowsClockwise
-                weight="duotone"
-                className="text-cyan-400 w-7 h-7"
-              />
-            }
-            delay={0.3}
-          />
-          <MetricCard
-            title="Low Stock Items"
-            value={inventoryStats.lowStockCount}
-            icon={
-              <Warning weight="duotone" className="text-cyan-400 w-7 h-7" />
-            }
-            delay={0.4}
-            additionalInfo="Items below reorder point"
-          />
-        </div>
-
-        {/* Enhanced Main Content */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-        >
-          <Paper className="bg-[#0f1729] border border-cyan-400/20 hover:border-cyan-400/40 transition-all p-6">
-            {/* Enhanced Search and Filter Bar */}
-            <div className="flex gap-4 mb-6">
-              <div className="relative flex-1">
-                <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
-                <input
-                  type="search"
-                  placeholder="Search inventory..."
-                  className="w-full p-3 pl-10 bg-navy-darker border border-cyan-400/20 rounded-lg text-white focus:border-cyan-400/40 focus:outline-none"
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <Button
-                variant="outlined"
-                startIcon={<FunnelSimple weight="duotone" />}
-                onClick={() => setShowFilters(!showFilters)}
-                className="border-cyan-400/40 text-cyan-400 hover:border-cyan-400"
-              >
-                Filters
-              </Button>
-            </div>
-
-            {/* Tabs Navigation */}
-            <Tabs
-              value={tabValue}
-              onChange={(_, newValue) => setTabValue(newValue)}
-              className="mb-4"
-              TabIndicatorProps={{
-                style: { backgroundColor: "#22d3ee" },
-              }}
-            >
-              <Tab label="All Items" className="text-slate-400" />
-              <Tab label="Low Stock" className="text-slate-400" />
-              <Tab label="Analytics" className="text-slate-400" />
-            </Tabs>
-
-            {/* Table Content */}
-            <AnimatePresence mode="wait">
-              {tabValue === 0 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
+            <Paper className="bg-[#0f1729] border border-cyan-400/20 hover:border-cyan-400/40 transition-all p-6">
+              {/* Search and Filter Bar */}
+              <div className="flex gap-4 mb-6">
+                <div className="relative flex-1">
+                  <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                  <input
+                    type="search"
+                    placeholder="Search inventory..."
+                    className="w-full p-3 pl-10 bg-navy-darker border border-cyan-400/20 rounded-lg text-white focus:border-cyan-400/40 focus:outline-none"
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+                <Button
+                  variant="outlined"
+                  startIcon={<FunnelSimple weight="duotone" />}
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="border-cyan-400/40 text-cyan-400 hover:border-cyan-400"
                 >
-                  <TableContainer>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell className="text-slate-400">SKU</TableCell>
-                          <TableCell className="text-slate-400">Name</TableCell>
-                          <TableCell className="text-slate-400">
-                            Category
-                          </TableCell>
-                          <TableCell className="text-slate-400">
-                            Stock Level
-                          </TableCell>
-                          <TableCell className="text-slate-400">
-                            Status
-                          </TableCell>
-                          <TableCell className="text-slate-400">
-                            Actions
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {inventoryItems.map((item) => (
-                          <TableRow
-                            key={item.id}
-                            className="hover:bg-cyan-400/5 transition-colors"
-                          >
-                            <TableCell className="text-slate-300">
-                              {item.sku}
+                  Filters
+                </Button>
+              </div>
+
+              {/* Tabs Navigation */}
+              <Tabs
+                value={tabValue}
+                onChange={(_, newValue) => setTabValue(newValue)}
+                className="mb-4"
+                TabIndicatorProps={{
+                  style: { backgroundColor: "#22d3ee" },
+                }}
+              >
+                <Tab label="All Items" className="text-slate-400" />
+                <Tab label="Low Stock" className="text-slate-400" />
+                <Tab label="Analytics" className="text-slate-400" />
+              </Tabs>
+
+              {/* Table Content */}
+              <AnimatePresence mode="wait">
+                {tabValue === 0 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <TableContainer>
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell className="text-slate-400">
+                              SKU
                             </TableCell>
-                            <TableCell className="text-slate-300">
-                              {item.name}
+                            <TableCell className="text-slate-400">
+                              Name
                             </TableCell>
-                            <TableCell className="text-slate-300">
-                              {item.category}
+                            <TableCell className="text-slate-400">
+                              Category
                             </TableCell>
-                            <TableCell className="text-slate-300">
-                              {item.stockLevel}
+                            <TableCell className="text-slate-400">
+                              Stock Level
                             </TableCell>
-                            <TableCell>
-                              <Chip
-                                label={item.status}
-                                color={getStatusColor(item.status)}
-                                size="small"
-                              />
+                            <TableCell className="text-slate-400">
+                              Status
                             </TableCell>
-                            <TableCell>
-                              <Button
-                                size="small"
-                                variant="outlined"
-                                className="border-cyan-400/40 text-cyan-400 hover:border-cyan-400"
-                              >
-                                View
-                              </Button>
+                            <TableCell className="text-slate-400">
+                              Actions
                             </TableCell>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <TablePagination
-                    component="div"
-                    count={100}
-                    page={page}
-                    onPageChange={(_, newPage) => setPage(newPage)}
-                    rowsPerPage={rowsPerPage}
-                    onRowsPerPageChange={(event) => {
-                      setRowsPerPage(parseInt(event.target.value, 10));
-                      setPage(0);
-                    }}
-                    className="text-slate-400"
-                  />
-                </motion.div>
-              )}
+                        </TableHead>
+                        <TableBody>
+                          {inventoryItems.map((item) => (
+                            <TableRow
+                              key={item.id}
+                              className="hover:bg-cyan-400/5 transition-colors"
+                            >
+                              <TableCell className="text-slate-300">
+                                {item.sku}
+                              </TableCell>
+                              <TableCell className="text-slate-300">
+                                {item.name}
+                              </TableCell>
+                              <TableCell className="text-slate-300">
+                                {item.category}
+                              </TableCell>
+                              <TableCell className="text-slate-300">
+                                {item.stockLevel}
+                              </TableCell>
+                              <TableCell>
+                                <Chip
+                                  label={item.status}
+                                  color={getStatusColor(item.status)}
+                                  size="small"
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Button
+                                  size="small"
+                                  variant="outlined"
+                                  className="border-cyan-400/40 text-cyan-400 hover:border-cyan-400"
+                                >
+                                  View
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    <TablePagination
+                      component="div"
+                      count={100}
+                      page={page}
+                      onPageChange={(_, newPage) => setPage(newPage)}
+                      rowsPerPage={rowsPerPage}
+                      onRowsPerPageChange={(event) => {
+                        setRowsPerPage(parseInt(event.target.value, 10));
+                        setPage(0);
+                      }}
+                      className="text-slate-400"
+                    />
+                  </motion.div>
+                )}
 
-              {tabValue === 2 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="h-[400px]"
-                >
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={stockTrends}>
-                      <XAxis dataKey="month" stroke="#94a3b8" />
-                      <YAxis stroke="#94a3b8" />
-                      <Tooltip />
-                      <Line
-                        type="monotone"
-                        dataKey="value"
-                        stroke="#22d3ee"
-                        strokeWidth={2}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </Paper>
-        </motion.div>
-      </Container>
+                {tabValue === 2 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="h-[400px]"
+                  >
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={stockTrends}>
+                        <XAxis dataKey="month" stroke="#94a3b8" />
+                        <YAxis stroke="#94a3b8" />
+                        <Tooltip />
+                        <Line
+                          type="monotone"
+                          dataKey="value"
+                          stroke="#22d3ee"
+                          strokeWidth={2}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </Paper>
+          </motion.div>
+        </Container>
+      </div>
     </div>
   );
 }

@@ -117,7 +117,7 @@ const Sidebar = () => {
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/route-planning" passHref isCollapsed={isCollapsed}>
+          <StyledLink href="/routing" passHref isCollapsed={isCollapsed}>
             <IconWrapper>
               <Map />
             </IconWrapper>

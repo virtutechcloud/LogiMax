@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import Header from "../components/header";
 import HeroSection from "../components/hero";
 import Benefits from "../components/benefits";
-import TestimonialsCarousel from "../components/TestimonialsCarousel";
 import PricingPlans from "../components/PricingPlans";
 import Footer from "../components/footer";
 
