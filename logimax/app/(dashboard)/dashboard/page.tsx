@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Typography,
@@ -34,6 +34,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import Sidebar from "../../components/sidebar";
 
 // Add mock data for the chart
 const chartData = [
@@ -301,180 +302,201 @@ const ActivitySection: React.FC = () => {
 };
 
 const Dashboard: React.FC = () => {
-  const [isClient, setIsClient] = React.useState(false);
+  const [isClient, setIsClient] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   React.useEffect(() => {
     setIsClient(true);
   }, []);
+
+  const handleSidebarToggle = (collapsed: boolean) => {
+    setIsSidebarCollapsed(collapsed);
+  };
 
   if (!isClient) {
     return null; // or a loading state
   }
 
   return (
-    <div className="min-h-screen bg-[#0a192f]">
-      {/* Enhanced background with better contrast */}
-      <motion.div
-        className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-400/5 to-transparent pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-      />
+    <div className="min-h-screen bg-[#0a192f] flex">
+      <Sidebar onToggle={handleSidebarToggle} />
+      <div
+        className={`flex-1 transition-all duration-300 ${
+          isSidebarCollapsed ? "ml-[60px]" : "ml-[250px]"
+        }`}
+      >
+        {/* Enhanced background with better contrast */}
+        <motion.div
+          className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-400/5 to-transparent pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+        />
 
-      <Container maxWidth="xl" className="relative">
-        <div className="py-8 space-y-10">
-          {/* Welcome Section with Quick Actions */}
-          <div className="flex justify-between items-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Typography variant="h4" className="text-white mb-2 font-light">
-                Welcome back 👋{" "}
-                <span className="font-bold text-cyan-400">Kayode</span>
-              </Typography>
-              <Typography variant="body1" className="text-slate-400">
-                Here's what's happening with your shipments today.
-              </Typography>
-            </motion.div>
-
-            {/* Quick Action Buttons */}
-            <div className="flex gap-3">
-              <Button
-                variant="outlined"
-                startIcon={<Package weight="duotone" />}
-                className="border-cyan-400/20 text-cyan-400 hover:border-cyan-400/40"
+        <Container maxWidth="xl" className="relative">
+          <div className="py-8 space-y-10">
+            {/* Welcome Section with Quick Actions */}
+            <div className="flex justify-between items-center">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
               >
-                New Shipment
-              </Button>
+                <Typography variant="h4" className="text-white mb-2 font-light">
+                  Welcome back 👋{" "}
+                  <span className="font-bold text-cyan-400">Kayode</span>
+                </Typography>
+                <Typography variant="body1" className="text-slate-400">
+                  Here's what's happening with your shipments today.
+                </Typography>
+              </motion.div>
+
+              {/* Quick Action Buttons */}
+              <div className="flex gap-3">
+                <Button
+                  variant="outlined"
+                  startIcon={<Package weight="duotone" />}
+                  className="border-cyan-400/20 text-cyan-400 hover:border-cyan-400/40"
+                >
+                  New Shipment
+                </Button>
+                <Button
+                  variant="contained"
+                  startIcon={<TrendUp weight="duotone" />}
+                  className="bg-cyan-400 hover:bg-cyan-500"
+                >
+                  View Reports
+                </Button>
+              </div>
+            </div>
+
+            {/* Analytics Grid - Fixed Chart Container */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Main Chart Section - Fixed Height and Overflow */}
+              <div className="lg:col-span-2">
+                <Paper className="h-[500px] bg-[#0a192f] border border-cyan-400/20 hover:border-cyan-400/40 transition-all duration-500">
+                  <div className="p-6 h-full flex flex-col">
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="space-y-1">
+                        <Typography
+                          variant="h6"
+                          className="text-white font-medium"
+                        >
+                          Shipment Analytics
+                        </Typography>
+                        <Typography variant="body2" className="text-slate-400">
+                          Track your shipping performance
+                        </Typography>
+                      </div>
+                      <select className="bg-[#0a192f] border border-cyan-400/20 text-slate-400 px-4 py-2 rounded-lg focus:outline-none focus:border-cyan-400/40 text-sm">
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="year">This Year</option>
+                      </select>
+                    </div>
+                    {/* Chart Container with Fixed Height */}
+                    <div className="flex-1 min-h-0">
+                      {" "}
+                      {/* This ensures proper height calculation */}
+                      <ChartSection />
+                    </div>
+                  </div>
+                </Paper>
+              </div>
+
+              {/* Activity Feed Section */}
+              <div className="lg:col-span-1">
+                <Paper className="h-[500px] bg-[#0a192f] border border-cyan-400/20 hover:border-cyan-400/40 transition-all duration-500">
+                  <ActivitySection />
+                </Paper>
+              </div>
+            </div>
+
+            {/* Metrics Section with Headers */}
+            <Grid item xs={12}>
+              <Typography variant="h6" className="text-white mb-4">
+                Key Performance Metrics
+              </Typography>
+              <Box className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  {
+                    title: "Total Shipments",
+                    value: "2,547",
+                    previousValue: "2,350",
+                    percentageChange: 8.4,
+                    icon: (
+                      <Truck
+                        weight="duotone"
+                        className="text-cyan-400 w-7 h-7"
+                      />
+                    ),
+                    delay: 0.1,
+                    trend: "up" as const,
+                    additionalInfo: "Monthly target: 3,000",
+                  },
+                  {
+                    title: "Active Shipments",
+                    value: "186",
+                    icon: (
+                      <Package
+                        weight="duotone"
+                        className="text-cyan-400 w-7 h-7"
+                      />
+                    ),
+                    delay: 0.2,
+                    additionalInfo: "Average transit time: 2.3 days",
+                  },
+                  {
+                    title: "On-Time Delivery",
+                    value: "94.2%",
+                    previousValue: "92.8%",
+                    percentageChange: 1.4,
+                    icon: (
+                      <Clock
+                        weight="duotone"
+                        className="text-cyan-400 w-7 h-7"
+                      />
+                    ),
+                    delay: 0.3,
+                    trend: "up" as const,
+                    additionalInfo: "Target: 95%",
+                  },
+                  {
+                    title: "Inventory Alerts",
+                    value: "12",
+                    previousValue: "5",
+                    percentageChange: 140,
+                    icon: (
+                      <Cube
+                        weight="duotone"
+                        className="text-cyan-400 w-7 h-7"
+                      />
+                    ),
+                    delay: 0.4,
+                    trend: "down" as const,
+                    additionalInfo: "Items below reorder point",
+                  },
+                ].map((metric) => (
+                  <div key={metric.title}>
+                    <MetricCard {...metric} />
+                  </div>
+                ))}
+              </Box>
+            </Grid>
+
+            {/* Help Section */}
+            <div className="fixed bottom-6 right-6">
               <Button
                 variant="contained"
-                startIcon={<TrendUp weight="duotone" />}
-                className="bg-cyan-400 hover:bg-cyan-500"
+                className="bg-cyan-400 hover:bg-cyan-500 rounded-full w-12 h-12 min-w-0"
+                title="Need help?"
               >
-                View Reports
+                ?
               </Button>
             </div>
           </div>
-
-          {/* Analytics Grid - Fixed Chart Container */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Main Chart Section - Fixed Height and Overflow */}
-            <div className="lg:col-span-2">
-              <Paper className="h-[500px] bg-[#0a192f] border border-cyan-400/20 hover:border-cyan-400/40 transition-all duration-500">
-                <div className="p-6 h-full flex flex-col">
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="space-y-1">
-                      <Typography
-                        variant="h6"
-                        className="text-white font-medium"
-                      >
-                        Shipment Analytics
-                      </Typography>
-                      <Typography variant="body2" className="text-slate-400">
-                        Track your shipping performance
-                      </Typography>
-                    </div>
-                    <select className="bg-[#0a192f] border border-cyan-400/20 text-slate-400 px-4 py-2 rounded-lg focus:outline-none focus:border-cyan-400/40 text-sm">
-                      <option value="week">This Week</option>
-                      <option value="month">This Month</option>
-                      <option value="year">This Year</option>
-                    </select>
-                  </div>
-                  {/* Chart Container with Fixed Height */}
-                  <div className="flex-1 min-h-0">
-                    {" "}
-                    {/* This ensures proper height calculation */}
-                    <ChartSection />
-                  </div>
-                </div>
-              </Paper>
-            </div>
-
-            {/* Activity Feed Section */}
-            <div className="lg:col-span-1">
-              <Paper className="h-[500px] bg-[#0a192f] border border-cyan-400/20 hover:border-cyan-400/40 transition-all duration-500">
-                <ActivitySection />
-              </Paper>
-            </div>
-          </div>
-
-          {/* Metrics Section with Headers */}
-          <Grid item xs={12}>
-            <Typography variant="h6" className="text-white mb-4">
-              Key Performance Metrics
-            </Typography>
-            <Box className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                {
-                  title: "Total Shipments",
-                  value: "2,547",
-                  previousValue: "2,350",
-                  percentageChange: 8.4,
-                  icon: (
-                    <Truck weight="duotone" className="text-cyan-400 w-7 h-7" />
-                  ),
-                  delay: 0.1,
-                  trend: "up" as const,
-                  additionalInfo: "Monthly target: 3,000",
-                },
-                {
-                  title: "Active Shipments",
-                  value: "186",
-                  icon: (
-                    <Package
-                      weight="duotone"
-                      className="text-cyan-400 w-7 h-7"
-                    />
-                  ),
-                  delay: 0.2,
-                  additionalInfo: "Average transit time: 2.3 days",
-                },
-                {
-                  title: "On-Time Delivery",
-                  value: "94.2%",
-                  previousValue: "92.8%",
-                  percentageChange: 1.4,
-                  icon: (
-                    <Clock weight="duotone" className="text-cyan-400 w-7 h-7" />
-                  ),
-                  delay: 0.3,
-                  trend: "up" as const,
-                  additionalInfo: "Target: 95%",
-                },
-                {
-                  title: "Inventory Alerts",
-                  value: "12",
-                  previousValue: "5",
-                  percentageChange: 140,
-                  icon: (
-                    <Cube weight="duotone" className="text-cyan-400 w-7 h-7" />
-                  ),
-                  delay: 0.4,
-                  trend: "down" as const,
-                  additionalInfo: "Items below reorder point",
-                },
-              ].map((metric) => (
-                <div key={metric.title}>
-                  <MetricCard {...metric} />
-                </div>
-              ))}
-            </Box>
-          </Grid>
-
-          {/* Help Section */}
-          <div className="fixed bottom-6 right-6">
-            <Button
-              variant="contained"
-              className="bg-cyan-400 hover:bg-cyan-500 rounded-full w-12 h-12 min-w-0"
-              title="Need help?"
-            >
-              ?
-            </Button>
-          </div>
-        </div>
-      </Container>
+        </Container>
+      </div>
     </div>
   );
 };
