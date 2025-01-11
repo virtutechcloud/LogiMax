@@ -89,7 +89,7 @@ const Sidebar = () => {
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/shipments" passHref isCollapsed={isCollapsed}>
+          <StyledLink href="/shipping" passHref isCollapsed={isCollapsed}>
             <IconWrapper>
               <LocalShipping />
             </IconWrapper>
