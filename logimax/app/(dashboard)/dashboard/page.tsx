@@ -22,7 +22,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import Sidebar from "../../components/sidebar";
+import Sidebar from "../../components/appComponents/sidebar";
 
 // Add mock data for the chart
 const chartData = [

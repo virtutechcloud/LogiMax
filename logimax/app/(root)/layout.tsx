@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Header from "../components/header";
-import HeroSection from "../components/hero";
-import Benefits from "../components/benefits";
-import PricingPlans from "../components/PricingPlans";
-import Footer from "../components/footer";
+import Header from "../components/webComponents/header";
+import HeroSection from "../components/webComponents/hero";
+import Benefits from "../components/webComponents/benefits";
+import PricingPlans from "../components/webComponents/PricingPlans";
+import Footer from "../components/webComponents/footer";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [mounted, setMounted] = useState(false);

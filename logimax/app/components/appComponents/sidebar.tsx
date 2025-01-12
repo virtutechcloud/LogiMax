@@ -24,7 +24,7 @@ const SidebarContainer = styled("aside")({
   backgroundColor: "#0a192f",
   color: "#fff",
   padding: "20px",
-  paddingTop: "80px",
+  paddingTop: "120px",
   height: "100vh",
   position: "fixed",
   overflowY: "auto",
@@ -115,7 +115,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/management" passHref>
+          <StyledLink href="/customer-management" passHref>
             <IconWrapper>
               <People />
             </IconWrapper>

@@ -37,7 +37,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import Sidebar from "../../components/sidebar";
+import Sidebar from "../../components/appComponents/sidebar";
 
 // Mock data - replace with actual data fetching
 const inventoryStats = {
