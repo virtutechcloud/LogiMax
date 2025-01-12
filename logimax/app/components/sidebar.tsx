@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
 import {
@@ -13,22 +13,22 @@ import {
   Help,
   Feedback,
   ExitToApp,
-  Menu as MenuIcon,
 } from "@mui/icons-material";
-import IconButton from "@mui/material/IconButton";
 
-const SidebarContainer = styled("aside")<{ isCollapsed: boolean }>(
-  ({ theme, isCollapsed }) => ({
-    width: isCollapsed ? "60px" : "250px",
-    backgroundColor: "#0a192f",
-    color: "#fff",
-    padding: "20px",
-    height: "100vh",
-    position: "fixed",
-    overflowY: "auto",
-    transition: "width 0.3s",
-  })
-);
+interface SidebarProps {
+  onToggle: (collapsed: boolean) => void;
+}
+
+const SidebarContainer = styled("aside")({
+  width: "250px",
+  backgroundColor: "#0a192f",
+  color: "#fff",
+  padding: "20px",
+  paddingTop: "80px",
+  height: "100vh",
+  position: "fixed",
+  overflowY: "auto",
+});
 
 const Menu = styled("ul")({
   listStyle: "none",
@@ -42,21 +42,19 @@ const MenuItem = styled("li")({
   alignItems: "center",
 });
 
-const StyledLink = styled(Link)<{ isCollapsed: boolean }>(
-  ({ isCollapsed }) => ({
-    textDecoration: "none",
-    color: "#fff",
-    padding: "10px",
-    display: "flex",
-    alignItems: "center",
-    borderRadius: "4px",
-    transition: "background-color 0.3s",
-    "&:hover": {
-      backgroundColor: "#112240",
-    },
-    justifyContent: isCollapsed ? "center" : "flex-start",
-  })
-);
+const StyledLink = styled(Link)({
+  textDecoration: "none",
+  color: "#fff",
+  padding: "10px",
+  display: "flex",
+  alignItems: "center",
+  borderRadius: "4px",
+  transition: "background-color 0.3s",
+  "&:hover": {
+    backgroundColor: "#112240",
+  },
+  justifyContent: "flex-start",
+});
 
 const IconWrapper = styled("span")({
   marginRight: "10px",
@@ -64,132 +62,104 @@ const IconWrapper = styled("span")({
   alignItems: "center",
 });
 
-const Sidebar = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-
+const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
   return (
-    <SidebarContainer isCollapsed={isCollapsed}>
-      <IconButton
-        onClick={toggleSidebar}
-        style={{ color: "#fff", marginBottom: "20px" }}
-      >
-        <MenuIcon />
-      </IconButton>
+    <SidebarContainer>
       <Menu>
         <MenuItem>
-          <StyledLink href="/dashboard" passHref isCollapsed={isCollapsed}>
+          <StyledLink href="/dashboard" passHref>
             <IconWrapper>
               <Dashboard />
             </IconWrapper>
-            {!isCollapsed && "Dashboard"}
+            Dashboard
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/shipping" passHref isCollapsed={isCollapsed}>
+          <StyledLink href="/shipping" passHref>
             <IconWrapper>
               <LocalShipping />
             </IconWrapper>
-            {!isCollapsed && "Shipments"}
+            Shipments
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/inventory" passHref isCollapsed={isCollapsed}>
+          <StyledLink href="/inventory" passHref>
             <IconWrapper>
               <Inventory />
             </IconWrapper>
-            {!isCollapsed && "Inventory"}
+            Inventory
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink
-            href="/fleet-management"
-            passHref
-            isCollapsed={isCollapsed}
-          >
+          <StyledLink href="/fleet" passHref>
             <IconWrapper>
               <DirectionsCar />
             </IconWrapper>
-            {!isCollapsed && "Fleet Management"}
+            Fleet Management
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/routing" passHref isCollapsed={isCollapsed}>
+          <StyledLink href="/routing" passHref>
             <IconWrapper>
               <Map />
             </IconWrapper>
-            {!isCollapsed && "Route Planning"}
+            Route Planning
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink
-            href="/analytics-reports"
-            passHref
-            isCollapsed={isCollapsed}
-          >
+          <StyledLink href="/analytics" passHref>
             <IconWrapper>
               <Assessment />
             </IconWrapper>
-            {!isCollapsed && "Analytics & Reports"}
+            Analytics & Reports
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink
-            href="/customer-management"
-            passHref
-            isCollapsed={isCollapsed}
-          >
+          <StyledLink href="/management" passHref>
             <IconWrapper>
               <People />
             </IconWrapper>
-            {!isCollapsed && "Customer Management"}
+            Customer Management
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink
-            href="/user-management"
-            passHref
-            isCollapsed={isCollapsed}
-          >
+          <StyledLink href="/user-management" passHref>
             <IconWrapper>
               <People />
             </IconWrapper>
-            {!isCollapsed && "User Management"}
+            User Management
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/settings" passHref isCollapsed={isCollapsed}>
+          <StyledLink href="/settings" passHref>
             <IconWrapper>
               <Settings />
             </IconWrapper>
-            {!isCollapsed && "Settings"}
+            Settings
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/help-support" passHref isCollapsed={isCollapsed}>
+          <StyledLink href="/help" passHref>
             <IconWrapper>
               <Help />
             </IconWrapper>
-            {!isCollapsed && "Help & Support"}
+            Help & Support
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/feedback" passHref isCollapsed={isCollapsed}>
+          <StyledLink href="/feedback" passHref>
             <IconWrapper>
               <Feedback />
             </IconWrapper>
-            {!isCollapsed && "Feedback"}
+            Feedback
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/logout" passHref isCollapsed={isCollapsed}>
+          <StyledLink href="/logout" passHref>
             <IconWrapper>
               <ExitToApp />
             </IconWrapper>
-            {!isCollapsed && "Logout"}
+            Logout
           </StyledLink>
         </MenuItem>
       </Menu>
