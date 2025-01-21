@@ -2,7 +2,16 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Typography, Container, Grid, Paper, Box, Button } from "@mui/material";
+import {
+  Typography,
+  Container,
+  Grid,
+  Paper,
+  Box,
+  Button,
+  Card,
+  CardContent,
+} from "@mui/material";
 import {
   Truck,
   Package,
@@ -23,6 +32,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import Sidebar from "../../components/appComponents/sidebar";
+import dynamic from "next/dynamic";
 
 // Add mock data for the chart
 const chartData = [
@@ -60,7 +70,8 @@ const MetricCard: React.FC<MetricCardProps> = ({
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay }}
-    whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+    whileHover={{ scale: 1.02 }}
+    data-active={false}
     className="h-full"
   >
     <Paper className="relative h-[200px] w-full p-6 bg-gradient-to-br from-navy-dark/80 to-navy-dark/40 border border-cyan-400/20 hover:border-cyan-400/40 transition-all backdrop-blur-sm overflow-hidden flex flex-col group">
@@ -133,362 +144,365 @@ const MetricCard: React.FC<MetricCardProps> = ({
   </motion.div>
 );
 
-const ChartSection: React.FC = () => (
-  <div className="w-full h-full">
-    <ResponsiveContainer width="100%" height="100%">
-      <LineChart
-        data={chartData}
-        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-        <XAxis
-          dataKey="name"
-          stroke="#94a3b8"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-        />
-        <YAxis
-          stroke="#94a3b8"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-        />
-        <Tooltip
-          contentStyle={{
-            backgroundColor: "#0f172a",
-            border: "1px solid rgba(6, 182, 212, 0.2)",
-            borderRadius: "0.5rem",
-          }}
-          labelStyle={{ color: "#94a3b8" }}
-        />
-        <Line
-          type="monotone"
-          dataKey="shipments"
-          stroke="#06b6d4"
-          strokeWidth={2}
-          dot={false}
-          activeDot={{ r: 8 }}
-        />
-      </LineChart>
-    </ResponsiveContainer>
-  </div>
+// Create a dynamic import for the Chart section to prevent SSR
+const ChartSection = dynamic(
+  () =>
+    Promise.resolve(() => (
+      <div className="w-full h-[300px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={chartData}
+            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+            <XAxis
+              dataKey="name"
+              stroke="#94a3b8"
+              fontSize={12}
+              tickLine={false}
+              axisLine={false}
+            />
+            <YAxis
+              stroke="#94a3b8"
+              fontSize={12}
+              tickLine={false}
+              axisLine={false}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#0f172a",
+                border: "1px solid rgba(6, 182, 212, 0.2)",
+                borderRadius: "0.5rem",
+              }}
+              labelStyle={{ color: "#94a3b8" }}
+            />
+            <Line
+              type="monotone"
+              dataKey="shipments"
+              stroke="#06b6d4"
+              strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 8 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    )),
+  { ssr: false }
 );
 
 const ActivitySection: React.FC = () => {
-  // Use state to handle client-side rendering
-  const [isClient, setIsClient] = React.useState(false);
-
-  React.useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) {
-    return null; // or a loading state
-  }
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.6 }}
-      className="space-y-4"
+      className="p-6"
     >
-      <Paper className="p-8 bg-[#0f1729] border border-cyan-400/20 hover:border-cyan-400/40 transition-all backdrop-blur-sm relative overflow-hidden">
-        {/* Decorative gradients */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-400/5 rounded-full blur-3xl transform translate-x-16 -translate-y-16" />
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-400/5 rounded-full blur-2xl transform -translate-x-12 translate-y-12" />
+      <div className="relative z-10">
+        <div className="mb-6">
+          <Typography variant="h6" className="text-white font-medium">
+            Activity Feed
+          </Typography>
+          <Typography variant="body2" className="text-slate-400 mt-1">
+            Live shipment updates and system notifications
+          </Typography>
+        </div>
 
-        <div className="relative z-10">
-          <div className="mb-8">
-            <Typography variant="h5" className="text-white font-medium mb-2">
-              Activity Feed
-            </Typography>
-            <Typography variant="subtitle1" className="text-slate-300">
-              Live shipment updates and system notifications
-            </Typography>
-          </div>
-
-          <div className="space-y-4 overflow-y-auto max-h-[340px] pr-2">
-            {[
-              {
-                title: "Shipment Created",
-                time: "2 minutes ago",
-                status: "success",
-                icon: <Package weight="duotone" className="w-5 h-5" />,
-                description: "Order #12345 - Express Delivery to New York",
-              },
-              {
-                title: "Successful Delivery",
-                time: "15 minutes ago",
-                status: "success",
-                icon: <CheckCircle weight="duotone" className="w-5 h-5" />,
-                description:
-                  "Order #11890 delivered to John Smith in Los Angeles",
-              },
-              {
-                title: "Low Stock Warning",
-                time: "1 hour ago",
-                status: "warning",
-                icon: <Warning weight="duotone" className="w-5 h-5" />,
-                description:
-                  "Product SKU-789 (Premium Packaging) below minimum threshold",
-              },
-              {
-                title: "Delivery Delay Alert",
-                time: "2 hours ago",
-                status: "warning",
-                icon: <Clock weight="duotone" className="w-5 h-5" />,
-                description:
-                  "Order #34567 delayed due to weather conditions in Chicago",
-              },
-            ].map((activity, index) => (
-              <motion.div
-                key={activity.title}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.7 + index * 0.1 }}
-                className="group p-4 bg-navy-darker rounded-xl border border-cyan-400/10 hover:border-cyan-400/20 transition-all duration-300"
-              >
-                <div className="flex gap-4">
-                  <div
-                    className={`shrink-0 p-2.5 rounded-lg transition-colors duration-300 ${
-                      activity.status === "success"
-                        ? "bg-emerald-400/10 text-emerald-400 group-hover:bg-emerald-400/20"
-                        : "bg-amber-400/10 text-amber-400 group-hover:bg-amber-400/20"
-                    }`}
-                  >
-                    {activity.icon}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <Typography className="text-white font-semibold truncate">
-                        {activity.title}
-                      </Typography>
-                      <Typography
-                        variant="caption"
-                        className="text-slate-200 shrink-0 ml-2 font-semibold"
-                      >
-                        {activity.time}
-                      </Typography>
-                    </div>
+        <div className="space-y-4 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
+          {[
+            {
+              title: "Shipment Created",
+              time: "2 minutes ago",
+              status: "success",
+              icon: <Package weight="duotone" className="w-5 h-5" />,
+              description: "Order #12345 - Express Delivery to New York",
+            },
+            {
+              title: "Successful Delivery",
+              time: "15 minutes ago",
+              status: "success",
+              icon: <CheckCircle weight="duotone" className="w-5 h-5" />,
+              description:
+                "Order #11890 delivered to John Smith in Los Angeles",
+            },
+            {
+              title: "Low Stock Warning",
+              time: "1 hour ago",
+              status: "warning",
+              icon: <Warning weight="duotone" className="w-5 h-5" />,
+              description:
+                "Product SKU-789 (Premium Packaging) below minimum threshold",
+            },
+            {
+              title: "Delivery Delay Alert",
+              time: "2 hours ago",
+              status: "warning",
+              icon: <Clock weight="duotone" className="w-5 h-5" />,
+              description:
+                "Order #34567 delayed due to weather conditions in Chicago",
+            },
+          ].map((activity, index) => (
+            <motion.div
+              key={activity.title}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.7 + index * 0.1 }}
+              className={`group p-4 bg-navy-darker rounded-xl border border-cyan-400/20 hover:border-cyan-400/40 transition-all duration-300`}
+            >
+              <div className="flex gap-4">
+                <div
+                  className={`shrink-0 p-2.5 rounded-lg transition-colors duration-300 ${
+                    activity.status === "success"
+                      ? "bg-emerald-400/10 text-emerald-400 group-hover:bg-emerald-400/20"
+                      : "bg-amber-400/10 text-amber-400 group-hover:bg-amber-400/20"
+                  }`}
+                >
+                  {activity.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-1">
+                    <Typography className="text-white font-semibold truncate">
+                      {activity.title}
+                    </Typography>
                     <Typography
-                      variant="body2"
-                      className="text-slate-200 truncate font-medium"
+                      variant="caption"
+                      className="text-slate-400 shrink-0 ml-2"
                     >
-                      {activity.description}
+                      {activity.time}
                     </Typography>
                   </div>
+                  <Typography
+                    variant="body2"
+                    className="text-slate-400 truncate"
+                  >
+                    {activity.description}
+                  </Typography>
                 </div>
-              </motion.div>
-            ))}
-          </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
-      </Paper>
+      </div>
     </motion.div>
   );
 };
 
 const Dashboard: React.FC = () => {
-  const [isClient, setIsClient] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   React.useEffect(() => {
-    setIsClient(true);
+    setMounted(true);
+    document.documentElement.style.backgroundColor = "#0a192f";
+    document.body.style.backgroundColor = "#0a192f";
+
+    return () => {
+      document.documentElement.style.backgroundColor = "";
+      document.body.style.backgroundColor = "";
+    };
   }, []);
 
   const handleSidebarToggle = (collapsed: boolean) => {
     setIsSidebarCollapsed(collapsed);
   };
 
+  if (!mounted) return null;
+
   return (
-    <div className="min-h-screen bg-[#0a192f] flex">
+    <div className="min-h-screen bg-[#0a192f] flex overflow-hidden">
       <Sidebar onToggle={handleSidebarToggle} />
-      {isClient && (
-        <div
-          className={`flex-1 transition-all duration-300 ${
-            isSidebarCollapsed ? "ml-[60px]" : "ml-[250px]"
-          }`}
-        >
-          {/* Enhanced background with better contrast */}
-          <motion.div
-            className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-400/5 to-transparent pointer-events-none"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-          />
-
-          <Container maxWidth="xl" className="relative">
-            <div className="py-8 space-y-10">
-              {/* Welcome Section with Quick Actions */}
-              <div className="flex justify-between items-center">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <Typography
-                    variant="h4"
-                    className="text-white mb-2 font-light"
-                  >
-                    Welcome back 👋{" "}
-                    <span className="font-bold text-cyan-400">Kayode</span>
-                  </Typography>
-                  <Typography variant="body1" className="text-slate-400">
-                    Here's what's happening with your shipments today.
-                  </Typography>
-                </motion.div>
-
-                {/* Quick Action Buttons */}
-                <div className="flex gap-3">
-                  <Button
-                    variant="outlined"
-                    startIcon={<Package weight="duotone" />}
-                    className="border-cyan-400/20 text-cyan-400 hover:border-cyan-400/40"
-                  >
-                    New Shipment
-                  </Button>
-                  <Button
-                    variant="contained"
-                    startIcon={<TrendUp weight="duotone" />}
-                    className="bg-cyan-400 hover:bg-cyan-500"
-                  >
-                    View Reports
-                  </Button>
-                </div>
-              </div>
-
-              {/* Analytics Grid - Fixed Chart Container */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Main Chart Section - Fixed Height and Overflow */}
-                <div className="lg:col-span-2">
-                  <Paper className="h-[500px] bg-[#0a192f] border border-cyan-400/20 hover:border-cyan-400/40 transition-all duration-500">
-                    <div className="p-6 h-full flex flex-col">
-                      <div className="flex justify-between items-start mb-6">
-                        <div className="space-y-1">
-                          <Typography
-                            variant="h6"
-                            className="text-white font-medium"
-                          >
-                            Shipment Analytics
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            className="text-slate-400"
-                          >
-                            Track your shipping performance
-                          </Typography>
-                        </div>
-                        <select className="bg-[#0a192f] border border-cyan-400/20 text-slate-400 px-4 py-2 rounded-lg focus:outline-none focus:border-cyan-400/40 text-sm">
-                          <option value="week">This Week</option>
-                          <option value="month">This Month</option>
-                          <option value="year">This Year</option>
-                        </select>
-                      </div>
-                      {/* Chart Container with Fixed Height */}
-                      <div className="flex-1 min-h-0">
-                        {" "}
-                        {/* This ensures proper height calculation */}
-                        <ChartSection />
-                      </div>
-                    </div>
-                  </Paper>
-                </div>
-
-                {/* Activity Feed Section */}
-                <div className="lg:col-span-1">
-                  <Paper className="h-[500px] bg-[#0a192f] border border-cyan-400/20 hover:border-cyan-400/40 transition-all duration-500">
-                    <ActivitySection />
-                  </Paper>
-                </div>
-              </div>
-
-              {/* Metrics Section with Headers */}
-              <Grid item xs={12}>
-                <Typography variant="h6" className="text-white mb-4">
-                  Key Performance Metrics
+      <div
+        className={`flex-1 transition-all duration-300 overflow-auto bg-[#0a192f] ${
+          isSidebarCollapsed ? "ml-[60px]" : "ml-[250px]"
+        }`}
+      >
+        <div className="bg-[#0a192f] min-h-screen">
+          <Container maxWidth="xl" sx={{ py: 4 }}>
+            {/* Header Section - Updated to match fleet page styling */}
+            <Box
+              sx={{
+                mb: 4,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Box>
+                <Typography variant="h4" sx={{ color: "white", mb: 1 }}>
+                  Dashboard{" "}
+                  <span style={{ color: "#22d3ee", fontWeight: "bold" }}>
+                    Overview
+                  </span>
                 </Typography>
-                <Box className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                  {[
-                    {
-                      title: "Total Shipments",
-                      value: "2,547",
-                      previousValue: "2,350",
-                      percentageChange: 8.4,
-                      icon: (
-                        <Truck
-                          weight="duotone"
-                          className="text-cyan-400 w-7 h-7"
-                        />
-                      ),
-                      delay: 0.1,
-                      trend: "up" as const,
-                      additionalInfo: "Monthly target: 3,000",
+                <Typography variant="body1" sx={{ color: "#94a3b8" }}>
+                  Here's what's happening with your shipments today.
+                </Typography>
+              </Box>
+              <div className="flex gap-3">
+                <Button
+                  variant="outlined"
+                  startIcon={<Package weight="bold" />}
+                  sx={{
+                    borderColor: "rgba(34, 211, 238, 0.2)",
+                    color: "#22d3ee",
+                    "&:hover": {
+                      borderColor: "rgba(34, 211, 238, 0.4)",
                     },
-                    {
-                      title: "Active Shipments",
-                      value: "186",
-                      icon: (
-                        <Package
-                          weight="duotone"
-                          className="text-cyan-400 w-7 h-7"
-                        />
-                      ),
-                      delay: 0.2,
-                      additionalInfo: "Average transit time: 2.3 days",
-                    },
-                    {
-                      title: "On-Time Delivery",
-                      value: "94.2%",
-                      previousValue: "92.8%",
-                      percentageChange: 1.4,
-                      icon: (
-                        <Clock
-                          weight="duotone"
-                          className="text-cyan-400 w-7 h-7"
-                        />
-                      ),
-                      delay: 0.3,
-                      trend: "up" as const,
-                      additionalInfo: "Target: 95%",
-                    },
-                    {
-                      title: "Inventory Alerts",
-                      value: "12",
-                      previousValue: "5",
-                      percentageChange: 140,
-                      icon: (
-                        <Cube
-                          weight="duotone"
-                          className="text-cyan-400 w-7 h-7"
-                        />
-                      ),
-                      delay: 0.4,
-                      trend: "down" as const,
-                      additionalInfo: "Items below reorder point",
-                    },
-                  ].map((metric) => (
-                    <div key={metric.title}>
-                      <MetricCard {...metric} />
-                    </div>
-                  ))}
-                </Box>
-              </Grid>
-
-              {/* Help Section */}
-              <div className="fixed bottom-6 right-6">
+                  }}
+                >
+                  New Shipment
+                </Button>
                 <Button
                   variant="contained"
-                  className="bg-cyan-400 hover:bg-cyan-500 rounded-full w-12 h-12 min-w-0"
-                  title="Need help?"
+                  startIcon={<TrendUp weight="bold" />}
+                  sx={{
+                    bgcolor: "#22d3ee",
+                    "&:hover": {
+                      bgcolor: "#06b6d4",
+                    },
+                  }}
                 >
-                  ?
+                  View Reports
                 </Button>
               </div>
-            </div>
+            </Box>
+
+            {/* Metrics Section - Updated card sizes */}
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+              {[
+                {
+                  title: "Total Shipments",
+                  value: "2,547",
+                  icon: <Truck size={24} />,
+                  trend: "up",
+                  change: "8.4%",
+                },
+                {
+                  title: "Active Shipments",
+                  value: "186",
+                  icon: <Package size={24} />,
+                },
+                {
+                  title: "On-Time Delivery",
+                  value: "94.2%",
+                  icon: <Clock size={24} />,
+                  trend: "up",
+                  change: "1.4%",
+                },
+                {
+                  title: "Inventory Alerts",
+                  value: "12",
+                  icon: <Cube size={24} />,
+                  trend: "down",
+                  change: "140%",
+                },
+              ].map((stat, index) => (
+                <Grid item xs={12} sm={6} md={3} key={index}>
+                  <Card
+                    sx={{
+                      bgcolor: "#0f1729",
+                      border: "1px solid rgba(34, 211, 238, 0.2)",
+                      "&:hover": {
+                        border: "1px solid rgba(34, 211, 238, 0.4)",
+                      },
+                      height: "100%", // Ensure all cards have the same height
+                    }}
+                  >
+                    <CardContent>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          mb: 2,
+                        }}
+                      >
+                        <Typography variant="h6" sx={{ color: "#94a3b8" }}>
+                          {stat.title}
+                        </Typography>
+                        <Box sx={{ color: "#22d3ee" }}>{stat.icon}</Box>
+                      </Box>
+                      <Typography variant="h4" sx={{ color: "white" }}>
+                        {stat.value}
+                      </Typography>
+                      {stat.trend && (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                            mt: 1,
+                            color: stat.trend === "up" ? "#10b981" : "#ef4444",
+                          }}
+                        >
+                          {stat.trend === "up" ? (
+                            <TrendUp size={16} weight="bold" />
+                          ) : (
+                            <TrendDown size={16} weight="bold" />
+                          )}
+                          <Typography variant="caption">
+                            {stat.change}
+                          </Typography>
+                        </Box>
+                      )}
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+
+            {/* Chart and Activity Sections - Updated styling */}
+            <Paper
+              sx={{
+                bgcolor: "#0f1729",
+                border: "1px solid rgba(34, 211, 238, 0.2)",
+                "&:hover": {
+                  border: "1px solid rgba(34, 211, 238, 0.4)",
+                },
+                mb: 4,
+              }}
+            >
+              <div className="p-6 h-full flex flex-col">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="space-y-1">
+                    <Typography variant="h6" className="text-white font-medium">
+                      Shipment Analytics
+                    </Typography>
+                    <Typography variant="body2" className="text-slate-400">
+                      Track your shipping performance
+                    </Typography>
+                  </div>
+                  <select className="bg-[#0a192f] border border-cyan-400/20 text-slate-400 px-4 py-2 rounded-lg focus:outline-none focus:border-cyan-400/40 text-sm">
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="year">This Year</option>
+                  </select>
+                </div>
+                {/* Chart Container with Fixed Height */}
+                <div className="flex-1 min-h-0">
+                  {" "}
+                  {/* This ensures proper height calculation */}
+                  <ChartSection />
+                </div>
+              </div>
+            </Paper>
+
+            {/* Activity Feed - Updated styling */}
+            <Paper
+              sx={{
+                bgcolor: "#0f1729",
+                border: "1px solid rgba(34, 211, 238, 0.2)",
+                "&:hover": {
+                  border: "1px solid rgba(34, 211, 238, 0.4)",
+                },
+              }}
+            >
+              <ActivitySection />
+            </Paper>
           </Container>
         </div>
-      )}
+      </div>
     </div>
   );
 };

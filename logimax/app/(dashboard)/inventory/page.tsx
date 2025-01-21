@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Typography,
@@ -17,6 +17,11 @@ import {
   TableRow,
   TablePagination,
   Chip,
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  TextField,
 } from "@mui/material";
 import {
   Package,
@@ -72,14 +77,16 @@ const stockTrends = [
 ];
 
 // Add status color mapping
-const getStatusColor = (status: string) => {
-  const statusMap: Record<string, string> = {
+const getStatusColor = (
+  status: string
+): "success" | "warning" | "error" | "info" | "default" => {
+  const statusMap = {
     "In Stock": "success",
     "Low Stock": "warning",
     "Out of Stock": "error",
     Reorder: "info",
-  };
-  return statusMap[status] || "default";
+  } as const;
+  return statusMap[status as keyof typeof statusMap] || "default";
 };
 
 interface MetricCardProps {
@@ -97,51 +104,43 @@ const MetricCard: React.FC<MetricCardProps> = ({
   delay,
   additionalInfo,
 }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay }}
-    whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-    className="h-full"
+  <Card
+    sx={{
+      bgcolor: "#0f1729",
+      border: "1px solid rgba(34, 211, 238, 0.2)",
+      "&:hover": {
+        border: "1px solid rgba(34, 211, 238, 0.4)",
+      },
+      height: "100%",
+    }}
   >
-    <Paper className="relative h-[200px] w-full p-6 bg-gradient-to-br from-navy-dark/80 to-navy-dark/40 border border-cyan-400/20 hover:border-cyan-400/40 transition-all backdrop-blur-sm overflow-hidden flex flex-col group">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-400/5 rounded-full blur-3xl transform translate-x-16 -translate-y-16 group-hover:bg-cyan-400/10 transition-all duration-700" />
-      <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-400/5 rounded-full blur-2xl transform -translate-x-12 translate-y-12 group-hover:bg-blue-400/10 transition-all duration-700" />
-
-      <div className="relative z-10 flex items-center gap-3 h-16">
-        <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-400/20 to-cyan-400/5 backdrop-blur-sm group-hover:from-cyan-400/30 group-hover:to-cyan-400/10 transition-all duration-700">
-          {icon}
-        </div>
-        <Typography variant="body2" className="text-slate-400 font-medium">
+    <CardContent>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <Typography variant="h6" sx={{ color: "#94a3b8" }}>
           {title}
         </Typography>
-      </div>
-
-      <div className="relative z-10 flex-1 flex flex-col justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: delay + 0.2 }}
-        >
-          <Typography
-            variant="h3"
-            className="text-white font-bold tracking-tight"
-          >
-            {value}
-          </Typography>
-        </motion.div>
-      </div>
-
+        <Box sx={{ color: "#22d3ee" }}>{icon}</Box>
+      </Box>
+      <Typography variant="h4" sx={{ color: "white" }}>
+        {value}
+      </Typography>
       {additionalInfo && (
         <Typography
           variant="caption"
-          className="text-slate-400 block relative z-10"
+          sx={{ color: "#94a3b8", mt: 1, display: "block" }}
         >
           {additionalInfo}
         </Typography>
       )}
-    </Paper>
-  </motion.div>
+    </CardContent>
+  </Card>
 );
 
 export default function Inventory() {
@@ -150,114 +149,168 @@ export default function Inventory() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [showFilters, setShowFilters] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
-    <div className="min-h-screen bg-[#0a192f] flex">
-      <Sidebar className="w-64" />
-      <div className="flex-1 ml-64 relative">
-        <motion.div
-          className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-400/5 to-transparent pointer-events-none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-        />
-        <Container maxWidth="xl" className="relative py-8 space-y-10">
-          {/* Header Section */}
-          <div className="flex justify-between items-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+    <div className="min-h-screen bg-[#0a192f] flex overflow-hidden">
+      <Sidebar />
+      <div className="flex-1 ml-[250px] transition-all duration-300">
+        <div className="bg-[#0a192f] min-h-screen">
+          <Container maxWidth="xl" sx={{ py: 4 }}>
+            {/* Header Section */}
+            <Box
+              sx={{
+                mb: 4,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
             >
-              <Typography variant="h4" className="text-white mb-2 font-light">
-                Inventory Management
-              </Typography>
-              <Typography variant="body1" className="text-slate-400">
-                Monitor and manage your stock levels
-              </Typography>
-            </motion.div>
+              <Box>
+                <Typography variant="h4" sx={{ color: "white", mb: 1 }}>
+                  Inventory{" "}
+                  <span style={{ color: "#22d3ee", fontWeight: "bold" }}>
+                    Management
+                  </span>
+                </Typography>
+                <Typography variant="body1" sx={{ color: "#94a3b8" }}>
+                  Monitor and manage your stock levels
+                </Typography>
+              </Box>
 
-            <div className="flex gap-3">
-              <Button
-                variant="outlined"
-                startIcon={<Barcode weight="duotone" />}
-                className="border-cyan-400/40 text-cyan-400 hover:border-cyan-400"
-              >
-                Scan Item
-              </Button>
-              <Button
-                variant="contained"
-                startIcon={<Package weight="duotone" />}
-                className="bg-cyan-400 hover:bg-cyan-500"
-              >
-                Add New Item
-              </Button>
-            </div>
-          </div>
-
-          {/* Metrics Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <MetricCard
-              title="Total SKUs"
-              value={inventoryStats.totalSKUs}
-              icon={<Tag weight="duotone" className="text-cyan-400 w-7 h-7" />}
-              delay={0.1}
-            />
-            <MetricCard
-              title="Total Value"
-              value={inventoryStats.totalValue}
-              icon={<Cube weight="duotone" className="text-cyan-400 w-7 h-7" />}
-              delay={0.2}
-            />
-            <MetricCard
-              title="Turnover Rate"
-              value={inventoryStats.turnoverRate}
-              icon={
-                <ArrowsClockwise
-                  weight="duotone"
-                  className="text-cyan-400 w-7 h-7"
-                />
-              }
-              delay={0.3}
-            />
-            <MetricCard
-              title="Low Stock Items"
-              value={inventoryStats.lowStockCount}
-              icon={
-                <Warning weight="duotone" className="text-cyan-400 w-7 h-7" />
-              }
-              delay={0.4}
-              additionalInfo="Items below reorder point"
-            />
-          </div>
-
-          {/* Main Content */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <Paper className="bg-[#0f1729] border border-cyan-400/20 hover:border-cyan-400/40 transition-all p-6">
-              {/* Search and Filter Bar */}
-              <div className="flex gap-4 mb-6">
-                <div className="relative flex-1">
-                  <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
-                  <input
-                    type="search"
-                    placeholder="Search inventory..."
-                    className="w-full p-3 pl-10 bg-navy-darker border border-cyan-400/20 rounded-lg text-white focus:border-cyan-400/40 focus:outline-none"
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
+              <div className="flex gap-3">
                 <Button
                   variant="outlined"
-                  startIcon={<FunnelSimple weight="duotone" />}
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="border-cyan-400/40 text-cyan-400 hover:border-cyan-400"
+                  startIcon={<Barcode weight="bold" />}
+                  sx={{
+                    borderColor: "rgba(34, 211, 238, 0.2)",
+                    color: "#22d3ee",
+                    "&:hover": {
+                      borderColor: "rgba(34, 211, 238, 0.4)",
+                    },
+                  }}
                 >
-                  Filters
+                  Scan Item
+                </Button>
+                <Button
+                  variant="contained"
+                  startIcon={<Package weight="bold" />}
+                  sx={{
+                    bgcolor: "#22d3ee",
+                    "&:hover": {
+                      bgcolor: "#06b6d4",
+                    },
+                  }}
+                >
+                  Add New Item
                 </Button>
               </div>
+            </Box>
+
+            {/* Metrics Grid */}
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+              {[
+                {
+                  title: "Total SKUs",
+                  value: inventoryStats.totalSKUs,
+                  icon: <Tag weight="bold" size={24} />,
+                },
+                {
+                  title: "Total Value",
+                  value: inventoryStats.totalValue,
+                  icon: <Cube weight="bold" size={24} />,
+                },
+                {
+                  title: "Turnover Rate",
+                  value: inventoryStats.turnoverRate,
+                  icon: <ArrowsClockwise weight="bold" size={24} />,
+                },
+                {
+                  title: "Low Stock Items",
+                  value: inventoryStats.lowStockCount,
+                  icon: <Warning weight="bold" size={24} />,
+                  additionalInfo: "Items below reorder point",
+                },
+              ].map((metric, index) => (
+                <Grid item xs={12} sm={6} md={3} key={index}>
+                  <MetricCard {...metric} delay={0.1 * index} />
+                </Grid>
+              ))}
+            </Grid>
+
+            {/* Main Content */}
+            <Paper
+              sx={{
+                bgcolor: "#0f1729",
+                border: "1px solid rgba(34, 211, 238, 0.2)",
+                "&:hover": {
+                  border: "1px solid rgba(34, 211, 238, 0.4)",
+                },
+                p: 3,
+              }}
+            >
+              {/* Search and Filter Bar */}
+              <Paper
+                sx={{
+                  bgcolor: "#0f1729",
+                  border: "1px solid rgba(34, 211, 238, 0.2)",
+                  "&:hover": {
+                    border: "1px solid rgba(34, 211, 238, 0.4)",
+                  },
+                  mb: 4,
+                  p: 3,
+                }}
+              >
+                <div className="flex flex-wrap gap-4 items-center">
+                  <TextField
+                    placeholder="Search inventory..."
+                    variant="outlined"
+                    size="small"
+                    className="flex-1 min-w-[200px]"
+                    InputProps={{
+                      startAdornment: (
+                        <MagnifyingGlass className="text-slate-400 mr-2" />
+                      ),
+                      sx: {
+                        bgcolor: "#0a192f",
+                        color: "white",
+                        "& input": {
+                          color: "white",
+                        },
+                        "& fieldset": {
+                          borderColor: "rgba(34, 211, 238, 0.2)",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "rgba(34, 211, 238, 0.4) !important",
+                        },
+                      },
+                    }}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  <Button
+                    variant="outlined"
+                    startIcon={<FunnelSimple weight="bold" />}
+                    onClick={() => setShowFilters(!showFilters)}
+                    sx={{
+                      borderColor: "rgba(34, 211, 238, 0.2)",
+                      color: "#22d3ee",
+                      "&:hover": {
+                        borderColor: "rgba(34, 211, 238, 0.4)",
+                      },
+                    }}
+                  >
+                    Filters
+                  </Button>
+                </div>
+              </Paper>
 
               {/* Tabs Navigation */}
               <Tabs
@@ -285,22 +338,18 @@ export default function Inventory() {
                       <Table>
                         <TableHead>
                           <TableRow>
-                            <TableCell className="text-slate-400">
-                              SKU
-                            </TableCell>
-                            <TableCell className="text-slate-400">
-                              Name
-                            </TableCell>
-                            <TableCell className="text-slate-400">
+                            <TableCell sx={{ color: "white" }}>SKU</TableCell>
+                            <TableCell sx={{ color: "white" }}>Name</TableCell>
+                            <TableCell sx={{ color: "white" }}>
                               Category
                             </TableCell>
-                            <TableCell className="text-slate-400">
+                            <TableCell sx={{ color: "white" }}>
                               Stock Level
                             </TableCell>
-                            <TableCell className="text-slate-400">
+                            <TableCell sx={{ color: "white" }}>
                               Status
                             </TableCell>
-                            <TableCell className="text-slate-400">
+                            <TableCell sx={{ color: "white" }}>
                               Actions
                             </TableCell>
                           </TableRow>
@@ -309,18 +358,18 @@ export default function Inventory() {
                           {inventoryItems.map((item) => (
                             <TableRow
                               key={item.id}
-                              className="hover:bg-cyan-400/5 transition-colors"
+                              className="hover:bg-navy-darker"
                             >
-                              <TableCell className="text-slate-300">
+                              <TableCell sx={{ color: "white" }}>
                                 {item.sku}
                               </TableCell>
-                              <TableCell className="text-slate-300">
+                              <TableCell sx={{ color: "white" }}>
                                 {item.name}
                               </TableCell>
-                              <TableCell className="text-slate-300">
+                              <TableCell sx={{ color: "white" }}>
                                 {item.category}
                               </TableCell>
-                              <TableCell className="text-slate-300">
+                              <TableCell sx={{ color: "white" }}>
                                 {item.stockLevel}
                               </TableCell>
                               <TableCell>
@@ -334,7 +383,13 @@ export default function Inventory() {
                                 <Button
                                   size="small"
                                   variant="outlined"
-                                  className="border-cyan-400/40 text-cyan-400 hover:border-cyan-400"
+                                  sx={{
+                                    borderColor: "rgba(34, 211, 238, 0.2)",
+                                    color: "#22d3ee",
+                                    "&:hover": {
+                                      borderColor: "rgba(34, 211, 238, 0.4)",
+                                    },
+                                  }}
                                 >
                                   View
                                 </Button>
@@ -383,8 +438,8 @@ export default function Inventory() {
                 )}
               </AnimatePresence>
             </Paper>
-          </motion.div>
-        </Container>
+          </Container>
+        </div>
       </div>
     </div>
   );

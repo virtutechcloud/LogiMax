@@ -1,154 +1,233 @@
-// "use client";
+"use client";
 
-// import React from "react";
-// import { Metadata } from "next";
-// import { Button } from "@/components/ui/button";
-// import { Plus } from "lucide-react";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import FleetOverviewChart from "@fleet/components/FleetOverviewChart";
-// import VehicleStatusChart from "@fleet/components/VehicleStatusChart";
-// import MaintenanceScheduleChart from "@fleet/components/MaintenanceScheduleChart";
-// import DriverAvailabilityChart from "@fleet/components/DriverAvailabilityChart";
-// import VehicleDataTable from "@fleet/components/VehicleDataTable";
-// import DriverDataTable from "@fleet/components/DriverDataTable";
-// import MaintenanceDataTable from "@fleet/components/MaintenanceDataTable";
-// import { FleetStats } from "@fleet/components/FleetStats";
-// import { CreateVehicleDialog } from "@fleet/components/dialogs/CreateVehicleDialog";
-// import { CreateDriverDialog } from "@fleet/components/dialogs/CreateDriverDialog";
-// import { CreateMaintenanceDialog } from "@fleet/components/dialogs/CreateMaintenanceDialog";
+import React, { useState } from "react";
+import {
+  Typography,
+  Container,
+  Paper,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  IconButton,
+  Chip,
+} from "@mui/material";
+import {
+  Truck,
+  Users,
+  Wrench,
+  Plus,
+  DotsThree,
+  MapPin,
+  Bell,
+} from "@phosphor-icons/react";
+import Sidebar from "../../components/appComponents/sidebar";
 
-// export const metadata: Metadata = {
-//   title: "Fleet Management | LogiMax",
-//   description: "Comprehensive fleet management system for LogiMax",
-// };
+const FleetPage = () => {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-// const FleetPage = () => {
-//   const [activeTab, setActiveTab] = React.useState("overview");
-//   const [showCreateVehicle, setShowCreateVehicle] = React.useState(false);
-//   const [showCreateDriver, setShowCreateDriver] = React.useState(false);
-//   const [showCreateMaintenance, setShowCreateMaintenance] = React.useState(
-//     false
-//   );
+  const handleSidebarToggle = (collapsed: boolean) => {
+    setIsSidebarCollapsed(collapsed);
+  };
 
-//   return (
-//     <div className="flex-1 space-y-4 p-4 pt-6">
-//       <div className="flex items-center justify-between space-y-2">
-//         <h2 className="text-3xl font-bold tracking-tight">Fleet Management</h2>
-//         <div className="flex items-center space-x-2">
-//           {activeTab === "vehicles" && (
-//             <Button onClick={() => setShowCreateVehicle(true)}>
-//               <Plus className="mr-2 h-4 w-4" /> Add Vehicle
-//             </Button>
-//           )}
-//           {activeTab === "drivers" && (
-//             <Button onClick={() => setShowCreateDriver(true)}>
-//               <Plus className="mr-2 h-4 w-4" /> Add Driver
-//             </Button>
-//           )}
-//           {activeTab === "maintenance" && (
-//             <Button onClick={() => setShowCreateMaintenance(true)}>
-//               <Plus className="mr-2 h-4 w-4" /> Schedule Maintenance
-//             </Button>
-//           )}
-//         </div>
-//       </div>
+  // Mock data for demonstration
+  const vehicles = [
+    {
+      id: 1,
+      name: "Truck 001",
+      status: "Active",
+      location: "Route 66",
+      driver: "John Doe",
+      fuel: "75%",
+    },
+    {
+      id: 2,
+      name: "Van 002",
+      status: "Maintenance",
+      location: "Garage",
+      driver: "Jane Smith",
+      fuel: "45%",
+    },
+    {
+      id: 3,
+      name: "Truck 003",
+      status: "Active",
+      location: "Highway 95",
+      driver: "Mike Johnson",
+      fuel: "90%",
+    },
+  ];
 
-//       <Tabs defaultValue="overview" onValueChange={setActiveTab}>
-//         <TabsList>
-//           <TabsTrigger value="overview">Overview</TabsTrigger>
-//           <TabsTrigger value="vehicles">Vehicles</TabsTrigger>
-//           <TabsTrigger value="drivers">Drivers</TabsTrigger>
-//           <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
-//         </TabsList>
+  return (
+    <div className="min-h-screen bg-[#0a192f] flex">
+      <Sidebar onToggle={handleSidebarToggle} />
+      <div
+        className={`flex-1 transition-all duration-300 ${
+          isSidebarCollapsed ? "ml-[60px]" : "ml-[250px]"
+        }`}
+      >
+        <Container maxWidth="xl" sx={{ py: 4 }}>
+          {/* Header Section */}
+          <Box
+            sx={{
+              mb: 4,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Box>
+              <Typography variant="h4" sx={{ color: "white", mb: 1 }}>
+                Fleet{" "}
+                <span style={{ color: "#22d3ee", fontWeight: "bold" }}>
+                  Management
+                </span>
+              </Typography>
+              <Typography variant="body1" sx={{ color: "#94a3b8" }}>
+                Here's what's happening with your fleet today.
+              </Typography>
+            </Box>
+            <div className="flex gap-3">
+              <Button
+                variant="contained"
+                startIcon={<Plus weight="bold" />}
+                sx={{
+                  bgcolor: "#22d3ee",
+                  "&:hover": {
+                    bgcolor: "#06b6d4",
+                  },
+                }}
+              >
+                Add Vehicle
+              </Button>
+            </div>
+          </Box>
 
-//         <TabsContent value="overview" className="space-y-4">
-//           <FleetStats />
+          {/* Stats Cards */}
+          <Grid container spacing={3} sx={{ mb: 4 }}>
+            {[
+              {
+                title: "Total Vehicles",
+                value: "24",
+                icon: <Truck size={24} />,
+              },
+              {
+                title: "Active Drivers",
+                value: "18",
+                icon: <Users size={24} />,
+              },
+              {
+                title: "Pending Maintenance",
+                value: "3",
+                icon: <Wrench size={24} />,
+              },
+              {
+                title: "Active Routes",
+                value: "12",
+                icon: <MapPin size={24} />,
+              },
+            ].map((stat, index) => (
+              <Grid item xs={12} sm={6} md={3} key={index}>
+                <Card
+                  sx={{
+                    bgcolor: "#0f1729",
+                    border: "1px solid rgba(34, 211, 238, 0.2)",
+                    "&:hover": {
+                      border: "1px solid rgba(34, 211, 238, 0.4)",
+                    },
+                  }}
+                >
+                  <CardContent>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        mb: 2,
+                      }}
+                    >
+                      <Typography variant="h6" sx={{ color: "#94a3b8" }}>
+                        {stat.title}
+                      </Typography>
+                      <Box sx={{ color: "#22d3ee" }}>{stat.icon}</Box>
+                    </Box>
+                    <Typography variant="h4" sx={{ color: "white" }}>
+                      {stat.value}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
 
-//           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-//             <Card>
-//               <CardHeader>
-//                 <CardTitle>Fleet Overview</CardTitle>
-//               </CardHeader>
-//               <CardContent>
-//                 <FleetOverviewChart />
-//               </CardContent>
-//             </Card>
-//             <Card>
-//               <CardHeader>
-//                 <CardTitle>Vehicle Status</CardTitle>
-//               </CardHeader>
-//               <CardContent>
-//                 <VehicleStatusChart />
-//               </CardContent>
-//             </Card>
-//             <Card>
-//               <CardHeader>
-//                 <CardTitle>Maintenance Schedule</CardTitle>
-//               </CardHeader>
-//               <CardContent>
-//                 <MaintenanceScheduleChart />
-//               </CardContent>
-//             </Card>
-//             <Card>
-//               <CardHeader>
-//                 <CardTitle>Driver Availability</CardTitle>
-//               </CardHeader>
-//               <CardContent>
-//                 <DriverAvailabilityChart />
-//               </CardContent>
-//             </Card>
-//           </div>
-//         </TabsContent>
+          {/* Vehicles Table */}
+          <Paper
+            sx={{
+              bgcolor: "#0f1729",
+              border: "1px solid rgba(34, 211, 238, 0.2)",
+              "&:hover": {
+                border: "1px solid rgba(34, 211, 238, 0.4)",
+              },
+            }}
+          >
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ color: "#94a3b8" }}>Vehicle</TableCell>
+                    <TableCell sx={{ color: "#94a3b8" }}>Status</TableCell>
+                    <TableCell sx={{ color: "#94a3b8" }}>Location</TableCell>
+                    <TableCell sx={{ color: "#94a3b8" }}>Driver</TableCell>
+                    <TableCell sx={{ color: "#94a3b8" }}>Fuel Level</TableCell>
+                    <TableCell sx={{ color: "#94a3b8" }}>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {vehicles.map((vehicle) => (
+                    <TableRow key={vehicle.id}>
+                      <TableCell sx={{ color: "white" }}>
+                        {vehicle.name}
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          label={vehicle.status}
+                          color={
+                            vehicle.status === "Active" ? "success" : "warning"
+                          }
+                          size="small"
+                        />
+                      </TableCell>
+                      <TableCell sx={{ color: "white" }}>
+                        {vehicle.location}
+                      </TableCell>
+                      <TableCell sx={{ color: "white" }}>
+                        {vehicle.driver}
+                      </TableCell>
+                      <TableCell sx={{ color: "white" }}>
+                        {vehicle.fuel}
+                      </TableCell>
+                      <TableCell>
+                        <IconButton size="small" sx={{ color: "#22d3ee" }}>
+                          <DotsThree weight="bold" />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </Container>
+      </div>
+    </div>
+  );
+};
 
-//         <TabsContent value="vehicles">
-//           <Card>
-//             <CardHeader>
-//               <CardTitle>Vehicle Management</CardTitle>
-//             </CardHeader>
-//             <CardContent>
-//               <VehicleDataTable />
-//             </CardContent>
-//           </Card>
-//         </TabsContent>
-
-//         <TabsContent value="drivers">
-//           <Card>
-//             <CardHeader>
-//               <CardTitle>Driver Management</CardTitle>
-//             </CardHeader>
-//             <CardContent>
-//               <DriverDataTable />
-//             </CardContent>
-//           </Card>
-//         </TabsContent>
-
-//         <TabsContent value="maintenance">
-//           <Card>
-//             <CardHeader>
-//               <CardTitle>Maintenance Schedule</CardTitle>
-//             </CardHeader>
-//             <CardContent>
-//               <MaintenanceDataTable />
-//             </CardContent>
-//           </Card>
-//         </TabsContent>
-//       </Tabs>
-
-//       <CreateVehicleDialog
-//         open={showCreateVehicle}
-//         onOpenChange={setShowCreateVehicle}
-//       />
-//       <CreateDriverDialog
-//         open={showCreateDriver}
-//         onOpenChange={setShowCreateDriver}
-//       />
-//       <CreateMaintenanceDialog
-//         open={showCreateMaintenance}
-//         onOpenChange={setShowCreateMaintenance}
-//       />
-//     </div>
-//   );
-// };
-
-// export default FleetPage;
+export default FleetPage;

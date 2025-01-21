@@ -13,10 +13,6 @@ import {
   Tab,
   Typography,
   Button,
-  IconButton,
-  Card,
-  CardContent,
-  Divider,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -248,109 +244,63 @@ export default function RoutingDashboard() {
             isSidebarCollapsed ? "ml-[60px]" : "ml-[250px]"
           }`}
         >
-          {/* Gradient Background */}
-          <motion.div
-            className="fixed inset-0 bg-gradient-to-br from-cyan-500/5 via-purple-500/5 to-transparent pointer-events-none"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-          />
-
-          <Container maxWidth="xl" className="relative">
-            <div className="py-8 space-y-8">
-              {/* Modern Header Section */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10"
+          <div className="bg-[#0a192f] min-h-screen">
+            <Container maxWidth="xl" sx={{ py: 4 }}>
+              {/* Header Section */}
+              <Box
+                sx={{
+                  mb: 4,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
               >
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                  <div>
-                    <Typography
-                      variant="h4"
-                      className="text-white font-light tracking-wide bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent"
-                    >
-                      Route Management
-                    </Typography>
-                    <Typography variant="body1" className="text-slate-400 mt-2">
-                      Plan and monitor your delivery routes efficiently
-                    </Typography>
-                  </div>
-                  <div className="flex gap-4">
-                    <Button
-                      startIcon={<AddIcon />}
-                      variant="outlined"
-                      className="border-cyan-400/20 text-cyan-400 hover:border-cyan-400/40 hover:bg-cyan-400/5 transition-all duration-300 rounded-xl"
-                    >
-                      Create Route
-                    </Button>
-                    <Button
-                      startIcon={<FileUploadIcon />}
-                      variant="contained"
-                      className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 shadow-lg shadow-cyan-500/20 transition-all duration-300 rounded-xl"
-                    >
-                      Import Routes
-                    </Button>
-                  </div>
-                </div>
+                <Box>
+                  <Typography variant="h4" sx={{ color: "white", mb: 1 }}>
+                    Route{" "}
+                    <span style={{ color: "#22d3ee", fontWeight: "bold" }}>
+                      Management
+                    </span>
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: "#94a3b8" }}>
+                    Monitor and manage your delivery routes
+                  </Typography>
+                </Box>
 
-                {/* Quick Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
-                  {[
-                    {
-                      label: "Active Routes",
-                      value: "12",
-                      icon: <TruckIcon />,
-                      color: "text-cyan-400",
-                    },
-                    {
-                      label: "Total Stops",
-                      value: "48",
-                      icon: <LocationIcon />,
-                      color: "text-purple-400",
-                    },
-                    {
-                      label: "On Time",
-                      value: "92%",
-                      icon: <TimeIcon />,
-                      color: "text-green-400",
-                    },
-                    {
-                      label: "Delayed",
-                      value: "8%",
-                      icon: <DelayedIcon />,
-                      color: "text-red-400",
-                    },
-                  ].map((stat, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-cyan-400/30 transition-all duration-300"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className={`${stat.color}`}>{stat.icon}</div>
-                        <div>
-                          <Typography className="text-slate-400 text-sm">
-                            {stat.label}
-                          </Typography>
-                          <Typography className="text-white text-xl font-semibold">
-                            {stat.value}
-                          </Typography>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
+                <div className="flex gap-3">
+                  <Button
+                    variant="outlined"
+                    startIcon={<AddIcon />}
+                    sx={{
+                      borderColor: "rgba(34, 211, 238, 0.2)",
+                      color: "#22d3ee",
+                      "&:hover": {
+                        borderColor: "rgba(34, 211, 238, 0.4)",
+                      },
+                    }}
+                  >
+                    Create Route
+                  </Button>
+                  <Button
+                    variant="contained"
+                    startIcon={<FileUploadIcon />}
+                    sx={{
+                      bgcolor: "#22d3ee",
+                      "&:hover": {
+                        bgcolor: "#06b6d4",
+                      },
+                    }}
+                  >
+                    Import Routes
+                  </Button>
                 </div>
-              </motion.div>
+              </Box>
 
-              {/* Main Content Grid */}
-              <Grid container spacing={4}>
-                {/* Left Panel - Route List */}
-                <Grid item xs={12} md={3}>
-                  <Paper className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 h-[calc(100vh-400px)] overflow-hidden">
+              {/* Main Content Grid - Restructured for larger map */}
+              <div className="flex gap-6 h-[calc(100vh-180px)]">
+                {/* Left Sidebar - Route List (Narrower) */}
+                <div className="w-[300px] flex-shrink-0">
+                  <Paper className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 h-full overflow-hidden">
                     <Tabs
                       value={tabValue}
                       onChange={handleTabChange}
@@ -440,11 +390,11 @@ export default function RoutingDashboard() {
                         ))}
                     </div>
                   </Paper>
-                </Grid>
+                </div>
 
-                {/* Center Panel - Map */}
-                <Grid item xs={12} md={6}>
-                  <Paper className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 h-[calc(100vh-400px)] overflow-hidden">
+                {/* Center Panel - Larger Map */}
+                <div className="flex-grow">
+                  <Paper className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 h-full overflow-hidden">
                     {isLoaded ? (
                       <GoogleMap
                         mapContainerStyle={mapContainerStyle}
@@ -513,11 +463,11 @@ export default function RoutingDashboard() {
                       </div>
                     )}
                   </Paper>
-                </Grid>
+                </div>
 
-                {/* Right Panel - Route Details */}
-                <Grid item xs={12} md={3}>
-                  <Paper className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 h-[calc(100vh-400px)] overflow-hidden">
+                {/* Right Panel - Route Details (Narrower) */}
+                <div className="w-[300px] flex-shrink-0">
+                  <Paper className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 h-full overflow-hidden">
                     <div className="p-6">
                       <Typography
                         variant="h6"
@@ -600,10 +550,10 @@ export default function RoutingDashboard() {
                       )}
                     </div>
                   </Paper>
-                </Grid>
-              </Grid>
-            </div>
-          </Container>
+                </div>
+              </div>
+            </Container>
+          </div>
         </div>
       )}
     </div>

@@ -14,7 +14,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import {
-  BarChart as BarChartIcon,
+  ChartBar as BarChartIcon,
   Package,
   Cube,
   Truck,
@@ -27,6 +27,7 @@ import {
   Line,
   PieChart,
   Pie,
+  Cell,
   AreaChart,
   Area,
   XAxis,
@@ -46,9 +47,9 @@ const shipmentData = [
 ];
 
 const inventoryData = [
-  { category: "A", value: 45, turnover: 12 },
-  { category: "B", value: 35, turnover: 8 },
-  { category: "C", value: 20, turnover: 4 },
+  { category: "Raw Materials", value: 45, turnover: 12 },
+  { category: "Work in Progress", value: 35, turnover: 8 },
+  { category: "Finished Goods", value: 20, turnover: 4 },
 ];
 
 const fleetData = [
@@ -100,7 +101,7 @@ const Analytics = () => {
                     variant="h4"
                     className="text-white mb-2 font-light"
                   >
-                    Analytics Dashboard
+                    Analytics
                     <span className="font-bold text-cyan-400"> Overview</span>
                   </Typography>
                   <Typography variant="body1" className="text-slate-400">
@@ -112,12 +113,28 @@ const Analytics = () => {
                   <Select
                     value={timeRange}
                     onChange={(e) => setTimeRange(e.target.value as string)}
-                    className="bg-[#0a192f] border border-cyan-400/20 text-slate-400"
+                    className="bg-[#0a192f] border border-cyan-400/20 text-cyan-400"
+                    sx={{
+                      "& .MuiSelect-select": {
+                        color: "rgb(34, 211, 238)",
+                      },
+                      "& .MuiMenuItem-root": {
+                        color: "rgb(34, 211, 238)",
+                      },
+                    }}
                   >
-                    <MenuItem value="day">Last 24 Hours</MenuItem>
-                    <MenuItem value="week">Last Week</MenuItem>
-                    <MenuItem value="month">Last Month</MenuItem>
-                    <MenuItem value="year">Last Year</MenuItem>
+                    <MenuItem value="day" className="text-cyan-400">
+                      Last 24 Hours
+                    </MenuItem>
+                    <MenuItem value="week" className="text-cyan-400">
+                      Last Week
+                    </MenuItem>
+                    <MenuItem value="month" className="text-cyan-400">
+                      Last Month
+                    </MenuItem>
+                    <MenuItem value="year" className="text-cyan-400">
+                      Last Year
+                    </MenuItem>
                   </Select>
                   <Button
                     variant="outlined"
@@ -228,8 +245,9 @@ const Analytics = () => {
                       ))}
                     </div>
 
-                    {/* Charts Section */}
+                    {/* Enhanced Charts Section */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {/* Shipment Volume Trends */}
                       <Paper className="p-6 bg-[#0f1729] border border-cyan-400/20">
                         <Typography variant="h6" className="text-white mb-4">
                           Shipment Volume Trends
@@ -261,7 +279,124 @@ const Analytics = () => {
                           </ResponsiveContainer>
                         </div>
                       </Paper>
-                      {/* Add more charts here */}
+
+                      {/* On-Time Delivery Performance */}
+                      <Paper className="p-6 bg-[#0f1729] border border-cyan-400/20">
+                        <Typography variant="h6" className="text-white mb-4">
+                          On-Time Delivery Performance
+                        </Typography>
+                        <div className="h-[300px]">
+                          <ResponsiveContainer>
+                            <LineChart data={shipmentData}>
+                              <CartesianGrid
+                                strokeDasharray="3 3"
+                                stroke="#1e293b"
+                              />
+                              <XAxis dataKey="month" stroke="#94a3b8" />
+                              <YAxis stroke="#94a3b8" />
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: "#0f172a",
+                                  border: "1px solid rgba(6, 182, 212, 0.2)",
+                                  borderRadius: "0.5rem",
+                                }}
+                              />
+                              <Line
+                                type="monotone"
+                                dataKey="onTime"
+                                stroke="#06b6d4"
+                                strokeWidth={2}
+                              />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </Paper>
+
+                      {/* Inventory Distribution */}
+                      <Paper className="p-6 bg-[#0f1729] border border-cyan-400/20">
+                        <Typography variant="h6" className="text-white mb-4">
+                          Inventory Distribution
+                        </Typography>
+                        <div className="h-[300px]">
+                          <ResponsiveContainer>
+                            <PieChart>
+                              <Pie
+                                data={inventoryData}
+                                dataKey="value"
+                                nameKey="category"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={100}
+                                fill="#06b6d4"
+                                label={({ name, percent }) =>
+                                  `${name} ${(percent * 100).toFixed(0)}%`
+                                }
+                              >
+                                {inventoryData.map((entry, index) => (
+                                  <Cell
+                                    key={`cell-${index}`}
+                                    fill={
+                                      ["#06b6d4", "#0891b2", "#0e7490"][
+                                        index % 3
+                                      ]
+                                    }
+                                  />
+                                ))}
+                              </Pie>
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: "#0f172a",
+                                  border: "1px solid rgba(6, 182, 212, 0.2)",
+                                  borderRadius: "0.5rem",
+                                }}
+                              />
+                              <Legend
+                                formatter={(value) => (
+                                  <span style={{ color: "#94a3b8" }}>
+                                    {value}
+                                  </span>
+                                )}
+                              />
+                            </PieChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </Paper>
+
+                      {/* Fleet Utilization Overview */}
+                      <Paper className="p-6 bg-[#0f1729] border border-cyan-400/20">
+                        <Typography variant="h6" className="text-white mb-4">
+                          Fleet Utilization Overview
+                        </Typography>
+                        <div className="h-[300px]">
+                          <ResponsiveContainer>
+                            <BarChart data={fleetData}>
+                              <CartesianGrid
+                                strokeDasharray="3 3"
+                                stroke="#1e293b"
+                              />
+                              <XAxis dataKey="vehicle" stroke="#94a3b8" />
+                              <YAxis stroke="#94a3b8" />
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: "#0f172a",
+                                  border: "1px solid rgba(6, 182, 212, 0.2)",
+                                  borderRadius: "0.5rem",
+                                }}
+                              />
+                              <Bar
+                                dataKey="utilization"
+                                fill="#06b6d4"
+                                opacity={0.8}
+                              />
+                              <Bar
+                                dataKey="efficiency"
+                                fill="#0891b2"
+                                opacity={0.8}
+                              />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </Paper>
                     </div>
                   </Box>
                 )}
@@ -349,7 +484,9 @@ const Analytics = () => {
                                 cy="50%"
                                 outerRadius={100}
                                 fill="#06b6d4"
-                                label
+                                label={({ name, percent }) =>
+                                  `${name} ${(percent * 100).toFixed(0)}%`
+                                }
                               >
                                 {inventoryData.map((entry, index) => (
                                   <Cell
@@ -368,6 +505,13 @@ const Analytics = () => {
                                   border: "1px solid rgba(6, 182, 212, 0.2)",
                                   borderRadius: "0.5rem",
                                 }}
+                              />
+                              <Legend
+                                formatter={(value) => (
+                                  <span style={{ color: "#94a3b8" }}>
+                                    {value}
+                                  </span>
+                                )}
                               />
                             </PieChart>
                           </ResponsiveContainer>

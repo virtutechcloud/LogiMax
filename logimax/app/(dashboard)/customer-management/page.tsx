@@ -106,13 +106,13 @@ function CustomerManagementPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <Typography
-                    variant="h4"
-                    className="text-white mb-2 font-light"
-                  >
-                    Customer Management
+                  <Typography variant="h4" sx={{ color: "white", mb: 1 }}>
+                    Customer{" "}
+                    <span style={{ color: "#22d3ee", fontWeight: "bold" }}>
+                      Management
+                    </span>
                   </Typography>
-                  <Typography variant="body1" className="text-slate-400">
+                  <Typography variant="body1" sx={{ color: "#94a3b8" }}>
                     Manage and monitor your customer relationships
                   </Typography>
                 </motion.div>

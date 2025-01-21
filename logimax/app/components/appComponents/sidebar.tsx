@@ -14,6 +14,10 @@ import {
   Feedback,
   ExitToApp,
 } from "@mui/icons-material";
+import Avatar from "@mui/material/Avatar";
+import Badge from "@mui/material/Badge";
+import { green } from "@mui/material/colors";
+import { usePathname } from "next/navigation";
 
 interface SidebarProps {
   onToggle: (collapsed: boolean) => void;
@@ -21,12 +25,13 @@ interface SidebarProps {
 
 const SidebarContainer = styled("aside")({
   width: "250px",
-  backgroundColor: "#0a192f",
+  background: "linear-gradient(to bottom, #0a192f, #112240)",
   color: "#fff",
-  padding: "20px",
-  paddingTop: "120px",
+  padding: "24px 16px",
   height: "100vh",
   position: "fixed",
+  boxShadow: "4px 0 10px rgba(0, 0, 0, 0.2)",
+  borderRight: "1px solid rgba(255, 255, 255, 0.05)",
   overflowY: "auto",
 });
 
@@ -34,27 +39,36 @@ const Menu = styled("ul")({
   listStyle: "none",
   padding: 0,
   margin: 0,
+  display: "flex",
+  flexDirection: "column",
+  gap: "4px",
 });
 
 const MenuItem = styled("li")({
-  marginBottom: "15px",
+  marginBottom: 0,
   display: "flex",
   alignItems: "center",
 });
 
-const StyledLink = styled(Link)({
+const StyledLink = styled(Link)<{ active?: boolean }>(({ active }) => ({
   textDecoration: "none",
   color: "#fff",
-  padding: "10px",
+  padding: "10px 14px",
   display: "flex",
   alignItems: "center",
   borderRadius: "4px",
-  transition: "background-color 0.3s",
+  transition: "all 0.3s ease",
+  width: "100%",
+  backgroundColor: active ? "#112240" : "transparent",
+  color: active ? "#64ffda" : "#fff",
   "&:hover": {
     backgroundColor: "#112240",
+    transform: "translateX(5px)",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+    color: "#64ffda",
   },
   justifyContent: "flex-start",
-});
+}));
 
 const IconWrapper = styled("span")({
   marginRight: "10px",
@@ -62,12 +76,77 @@ const IconWrapper = styled("span")({
   alignItems: "center",
 });
 
+const ProfileSection = styled("div")({
+  textAlign: "center",
+  padding: "20px 0",
+  borderBottom: "1px solid #1e2d3d",
+  marginBottom: "24px",
+});
+
+const UserAvatar = styled(Avatar)({
+  width: "70px",
+  height: "70px",
+  margin: "0 auto 16px",
+  border: "3px solid #1e2d3d",
+  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+});
+
+const UserInfo = styled("div")({
+  marginBottom: "8px",
+});
+
+const UserName = styled("h3")({
+  margin: "0 0 8px",
+  fontSize: "1.1rem",
+  fontWeight: 600,
+});
+
+const UserRole = styled("span")({
+  color: "#8892b0",
+  fontSize: "0.9rem",
+  display: "block",
+});
+
+const QuickActions = styled("div")({
+  display: "flex",
+  justifyContent: "center",
+  gap: "10px",
+});
+
+const StatusBadge = styled(Badge)({
+  "& .MuiBadge-badge": {
+    backgroundColor: green[500],
+    color: green[500],
+    boxShadow: `0 0 0 2px #0a192f`,
+  },
+});
+
 const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
+  const pathname = usePathname();
+
   return (
     <SidebarContainer>
+      <ProfileSection>
+        <StatusBadge
+          overlap="circular"
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          variant="dot"
+        >
+          <UserAvatar alt="User Name" src="/path-to-avatar.jpg" />
+        </StatusBadge>
+        <UserInfo>
+          <UserName>John Doe</UserName>
+          <UserRole>Fleet Manager</UserRole>
+        </UserInfo>
+      </ProfileSection>
+
       <Menu>
         <MenuItem>
-          <StyledLink href="/dashboard" passHref>
+          <StyledLink
+            href="/dashboard"
+            active={pathname === "/dashboard"}
+            passHref
+          >
             <IconWrapper>
               <Dashboard />
             </IconWrapper>
@@ -75,7 +154,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/shipping" passHref>
+          <StyledLink
+            href="/shipping"
+            active={pathname === "/shipping"}
+            passHref
+          >
             <IconWrapper>
               <LocalShipping />
             </IconWrapper>
@@ -83,15 +166,19 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/inventory" passHref>
+          <StyledLink
+            href="/inventory"
+            active={pathname === "/inventory"}
+            passHref
+          >
             <IconWrapper>
               <Inventory />
             </IconWrapper>
-            Inventory
+            Inventory Management
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/fleet" passHref>
+          <StyledLink href="/fleet" active={pathname === "/fleet"} passHref>
             <IconWrapper>
               <DirectionsCar />
             </IconWrapper>
@@ -99,15 +186,19 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/routing" passHref>
+          <StyledLink href="/routing" active={pathname === "/routing"} passHref>
             <IconWrapper>
               <Map />
             </IconWrapper>
-            Route Planning
+            Route Management
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/analytics" passHref>
+          <StyledLink
+            href="/analytics"
+            active={pathname === "/analytics"}
+            passHref
+          >
             <IconWrapper>
               <Assessment />
             </IconWrapper>
@@ -115,7 +206,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/customer-management" passHref>
+          <StyledLink
+            href="/customer-management"
+            active={pathname === "/customer-management"}
+            passHref
+          >
             <IconWrapper>
               <People />
             </IconWrapper>
@@ -123,7 +218,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/user-management" passHref>
+          <StyledLink
+            href="/user-management"
+            active={pathname === "/user-management"}
+            passHref
+          >
             <IconWrapper>
               <People />
             </IconWrapper>
@@ -131,7 +230,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/settings" passHref>
+          <StyledLink
+            href="/settings"
+            active={pathname === "/settings"}
+            passHref
+          >
             <IconWrapper>
               <Settings />
             </IconWrapper>
@@ -139,7 +242,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/help" passHref>
+          <StyledLink href="/help" active={pathname === "/help"} passHref>
             <IconWrapper>
               <Help />
             </IconWrapper>
@@ -147,7 +250,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
           </StyledLink>
         </MenuItem>
         <MenuItem>
-          <StyledLink href="/feedback" passHref>
+          <StyledLink
+            href="/feedback"
+            active={pathname === "/feedback"}
+            passHref
+          >
             <IconWrapper>
               <Feedback />
             </IconWrapper>

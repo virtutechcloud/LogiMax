@@ -58,8 +58,8 @@ const SettingsCard: React.FC<SettingsCardProps> = ({
 export default function Settings() {
   return (
     <div className="min-h-screen bg-[#0a192f] flex">
-      <Sidebar className="w-64" />
-      <div className="flex-1 ml-64 relative">
+      <Sidebar onToggle={() => {}} />
+      <div className="flex-1 ml-[250px] relative">
         <motion.div
           className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-400/5 to-transparent pointer-events-none"
           initial={{ opacity: 0 }}
@@ -73,8 +73,11 @@ export default function Settings() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Typography variant="h4" className="text-white mb-2 font-light">
-              Settings
+            <Typography variant="h4" className="text-white mb-1">
+              Settings{" "}
+              <span className="text-cyan-400" style={{ fontWeight: "bold" }}>
+                Overview
+              </span>
             </Typography>
             <Typography variant="body1" className="text-slate-400">
               Manage your account and system preferences
@@ -86,7 +89,9 @@ export default function Settings() {
             <SettingsCard
               title="Company Profile"
               description="Manage your company information, logo, and business details"
-              icon={<Buildings weight="duotone" className="text-cyan-400 w-7 h-7" />}
+              icon={
+                <Buildings weight="duotone" className="text-cyan-400 w-7 h-7" />
+              }
               delay={0.1}
             />
             <SettingsCard
@@ -110,13 +115,17 @@ export default function Settings() {
             <SettingsCard
               title="Security"
               description="Manage security settings and two-factor authentication"
-              icon={<Password weight="duotone" className="text-cyan-400 w-7 h-7" />}
+              icon={
+                <Password weight="duotone" className="text-cyan-400 w-7 h-7" />
+              }
               delay={0.5}
             />
             <SettingsCard
               title="Localization"
               description="Set your language, timezone, and regional preferences"
-              icon={<Globe weight="duotone" className="text-cyan-400 w-7 h-7" />}
+              icon={
+                <Globe weight="duotone" className="text-cyan-400 w-7 h-7" />
+              }
               delay={0.6}
             />
           </div>
