@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { protect, admin } = require("../middleware/auth.middleware");
 
-// Basic user routes - we can expand these later
 router.get("/profile", protect, (req, res) => {
   res.json(req.user);
 });

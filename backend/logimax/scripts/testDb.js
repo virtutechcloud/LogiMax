@@ -1,12 +1,10 @@
 const mongoose = require("mongoose");
-const config = require("../config/config");
 const connectDB = require("../config/database");
 
 async function testConnection() {
   try {
     await connectDB();
 
-    // Test creating a collection
     await mongoose.connection.db.createCollection("test_collection");
     console.log("Test collection created successfully");
 

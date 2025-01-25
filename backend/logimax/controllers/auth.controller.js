@@ -1,12 +1,18 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const config = require("../config/config");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+
+const hashPassword = async (password) => {
+  return await bcrypt.hash(password, saltRounds);
+};
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, role } = req.body;
 
-    // Check if user exists
+  // Check if user exists
     const userExists = await User.findOne({ $or: [{ email }, { username }] });
     if (userExists) {
       return res.status(400).json({ message: "User already exists" });
@@ -16,12 +22,16 @@ exports.register = async (req, res) => {
     const user = await User.create({
       username,
       email,
-      password,
-    });
+      password: await hashPassword(password),
+      role,
+    });     
 
     // Generate token
     const token = jwt.sign({ id: user._id }, config.jwt.secret, {
       expiresIn: config.jwt.expiresIn,
+      algorithm: "HS256",
+      issuer: "logimax",
+      audience: "logimax-api",
     });
 
     res.status(201).json({
@@ -31,6 +41,8 @@ exports.register = async (req, res) => {
         username: user.username,
         email: user.email,
         role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       },
     });
   } catch (error) {
@@ -49,7 +61,7 @@ exports.login = async (req, res) => {
     }
 
     // Check password
-    const isMatch = await user.comparePassword(password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -57,6 +69,10 @@ exports.login = async (req, res) => {
     // Generate token
     const token = jwt.sign({ id: user._id }, config.jwt.secret, {
       expiresIn: config.jwt.expiresIn,
+      algorithm: "HS256",
+      issuer: "logimax",
+      audience: "logimax-api",
+
     });
 
     res.json({
@@ -65,7 +81,10 @@ exports.login = async (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
+        password: user.password,
         role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       },
     });
   } catch (error) {

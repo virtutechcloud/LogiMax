@@ -23,9 +23,6 @@ app.use(dbStatus);
 
 // Routes
 app.use("/api/auth", require("./routes/auth.routes"));
-// Temporarily comment out user routes until implemented
-// app.use("/api/users", require("./routes/user.routes"));
-// Add other routes as needed
 
 // Add a health check endpoint
 app.get("/health", (req, res) => {
